@@ -41,21 +41,16 @@ class StimulusPlotCanvas(FigureCanvas):
 #*******************************************************************************
 
         # All values and conditions concerning the 'running' of an experiment are
-        # stored here (including the timer and its connection to 'bleepShower')
+        # stored here
         self.runningTime = 0
-        self.running = False
 
-        self.bleepInterval = 250
+        self.bleepInterval = 100    # Needs to be multiplicable to a 1000
         self.intervalsPassed = 0
         self.counter = 0
 
-        self.timer = QtCore.QTimer()
-        self.timer.timeout.connect(self.bleepShower)
+        self.oneSecond = 1000 # ms
 
 #*******************************************************************************
-
-        # Upon initiation, the stimulus plot will be created inside the canvas
-        self.plotStimulus()
 
         FigureCanvas.__init__(self, fig)
         self.setParent(parent)
@@ -69,36 +64,23 @@ class StimulusPlotCanvas(FigureCanvas):
 
 #*******************************************************************************
 
-    """"
+    """
     This function handles the plotting and other visual aspects of the plot
-    """"
+    """
+
     def plotStimulus(self):
 
-        # Means the 'Run experiment' button was not pressed
-        if not self.running:
+        # The axes should be cleared everytime this is run
+        self.axes.cla()
 
-            # The axes should be cleared everytime this is run
-            self.axes.cla()
+        # Looks good to only have the x-axis (seconds)
+        self.axes.spines['top'].set_visible(False)
+        self.axes.spines['right'].set_visible(False)
+        self.axes.spines['left'].set_visible(False)
+        self.axes.get_yaxis().set_ticks([])
 
-            # Looks good to only have the x-axis (seconds)
-            self.axes.spines['top'].set_visible(False)
-            self.axes.spines['right'].set_visible(False)
-            self.axes.spines['left'].set_visible(False)
-            self.axes.get_yaxis().set_ticks([])
-
-            self.axes.plot(self.x, self.y, drawstyle="steps-post")
-            self.axes.plot(self.xBleep, self.yBleep, 'ro')
-
-        # Means the 'Run experiment' button was pressed
-        if self.running:
-
-            # The last value of the x list will be the total running time
-            self.runningTime = self.x[len(self.x) - 1]
-            self.startingTime = time.time()
-
-            # The connection that the timer has will be executed every 'bleepInterval'
-            # milliseconds. This means that 'bleepShower' is triggered every 'bleepInterval' ms
-            self.timer.start(self.bleepInterval)
+        self.axes.plot(self.x, self.y, drawstyle="steps-post")
+        self.axes.plot(self.xBleep, self.yBleep, 'ro')
 
 #*******************************************************************************
 
@@ -108,13 +90,20 @@ class StimulusPlotCanvas(FigureCanvas):
     """
     def bleepShower(self):
 
+        # When we have reached our total running time the triggering of this function
+        # should cease, and all values concerning the run should be reset
+        if self.xBleep == self.runningTime:
+            return
+
         # The value of 'xBleep' is essentially the time passed in seconds (converted from ms)
-        self.xBleep = self.intervalsPassed * self.bleepInterval / 1000
+        self.xBleep = self.intervalsPassed * self.bleepInterval / self.oneSecond
 
         # If the signal-value ('yBleep') has to change at a certain time,
         # the plot should read a new value from the y-list
         if self.xBleep >= (self.x[self.counter]):
             self.counter += 1
+
+
         self.yBleep = self.y[self.counter - 1]
 
         # The plot is cleared and re-plotted
@@ -124,14 +113,6 @@ class StimulusPlotCanvas(FigureCanvas):
         self.draw()
 
         self.intervalsPassed += 1
-
-        # When we have reached our total running time the triggering of this function
-        # should cease, and all values concerning the run should be reset
-        if self.xBleep == self.runningTime:
-
-            self.timer.stop()
-            self.resetStuff()
-            return
 
 #*******************************************************************************
 
@@ -144,7 +125,6 @@ class StimulusPlotCanvas(FigureCanvas):
         self.yBleep = 0
 
         self.runningTime = 0
-        self.running = False
 
         self.intervalsPassed = 0
         self.counter = 0

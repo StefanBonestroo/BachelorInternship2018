@@ -13,6 +13,8 @@ import os
 import sys
 
 import random
+import time
+
 import design
 from PyQt5 import QtCore, QtGui, QtWidgets
 
@@ -42,7 +44,7 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
 #******************************************************************************
 
-        # When the values of the stimulus program change, 'updateStimulusPlot'
+        # When the values of the stimulus protocol change, 'updateStimulusPlot'
         # will trigger
         self.preSpinBox.valueChanged.connect(self.updateStimulusPlot)
         self.stimSpinBox.valueChanged.connect(self.updateStimulusPlot)
@@ -51,8 +53,23 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
 #******************************************************************************
 
-        # Triggers 'showExperiment' on the button press
-        self.runButton.clicked.connect(self.showExperiment)
+        self.runButton.clicked.connect(self.runExperiment)
+        self.cancelButton.clicked.connect(self.terminateExperiment)
+
+#******************************************************************************
+
+        # Updates the stimulus plot to show a standard stimulus protocol
+        self.updateStimulusPlot()
+
+#******************************************************************************
+
+        # Timer for the little stimulus bleep
+        self.bleepTimer = QtCore.QTimer()
+        self.bleepTimer.timeout.connect(self.graph.bleepShower)
+
+        # Timer for sending a signal to hardware
+        self.signalTimer = QtCore.QTimer()
+        self.signalTimer.timeout.connect(self.sendSignal)
 
 #******************************************************************************
 
@@ -83,7 +100,7 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
     This function will use the info from the spinboxes to construct
     a stimulus plot to be viewed inside of the canvas.
     """
-    def updateStimulusPlot(self, running):
+    def updateStimulusPlot(self):
 
         # The spinbox values are obtained
         pre = self.preSpinBox.value()
@@ -116,7 +133,7 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
         # The last value of y should be 0, so that the plot looks nice
         y[len(y) - 1] = 0
 
-        # Also a 'nice-maker
+        # Also a 'nice'-maker
         if stimulus == 0:
             y = [0] * len(y)
 
@@ -134,7 +151,48 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
     This function will run 'plotStimulus' under different conditions, since the
     stimulusplot is already constructed. This merely controls the little bleep.
     """
-    def showExperiment(self):
+    def runExperiment(self):
 
-        self.graph.running = True
-        self.graph.plotStimulus()
+        x = self.graph.x
+
+        # The last value of the x list will be the total running time
+        self.graph.runningTime = x[len(x) - 1]
+        self.graph.startingTime = time.time()
+
+        # The connection that this timer has will be executed every second
+        self.signalTimer.start(self.graph.oneSecond)
+
+        # The connection that this timer has will be executed every 'bleepInterval'
+        # milliseconds. This means that 'bleepShower' is triggered every 'bleepInterval' ms
+        self.bleepTimer.start(self.graph.bleepInterval)
+
+#******************************************************************************
+
+    """
+    This function will terminate an experiment run.
+    """
+    def terminateExperiment(self):
+
+        self.bleepTimer.stop()
+        self.signalTimer.stop()
+
+        self.graph.resetStuff()
+        self.updateStimulusPlot()
+
+#******************************************************************************
+
+    """
+    This function makes sure that, during the running of an experiment, certain
+    signals can be sent to an experiment's equipment.
+    """
+    def sendSignal(self):
+
+        # When we have reached our total running time the triggering of this function
+        # should cease, and all values concerning the run should be reset
+        if self.graph.xBleep == self.graph.runningTime:
+
+            self.terminateExperiment()
+            return
+
+        if self.graph.yBleep == 1:
+            print("clickClack")
