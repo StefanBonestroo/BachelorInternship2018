@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1280</width>
-    <height>800</height>
+    <width>1906</width>
+    <height>802</height>
    </rect>
   </property>
   <property name="cursor">
@@ -17,7 +17,7 @@
    <string>Frequency Detector</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QFrame" name="post">
+   <widget class="QFrame" name="postExperimentFrame">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -27,12 +27,15 @@
      </rect>
     </property>
     <property name="frameShape">
-     <enum>QFrame::StyledPanel</enum>
+     <enum>QFrame::Box</enum>
     </property>
     <property name="frameShadow">
      <enum>QFrame::Raised</enum>
     </property>
-    <widget class="QFrame" name="listOfVideos">
+    <property name="lineWidth">
+     <number>2</number>
+    </property>
+    <widget class="QFrame" name="pickAVideoFrame">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -45,7 +48,7 @@
       <enum>QFrame::StyledPanel</enum>
      </property>
      <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
+      <enum>QFrame::Sunken</enum>
      </property>
      <widget class="QWidget" name="verticalLayoutWidget_2">
       <property name="geometry">
@@ -58,19 +61,19 @@
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_6">
        <item alignment="Qt::AlignHCenter">
-        <widget class="QLabel" name="label_6">
+        <widget class="QLabel" name="pickAVideoLabel">
          <property name="text">
           <string>Pick a video to analyze</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QListView" name="videoList">
-         <property name="frameShape">
-          <enum>QFrame::HLine</enum>
+        <widget class="QListWidget" name="videoList">
+         <property name="spacing">
+          <number>10</number>
          </property>
-         <property name="frameShadow">
-          <enum>QFrame::Plain</enum>
+         <property name="sortingEnabled">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -97,7 +100,7 @@
       <enum>QFrame::StyledPanel</enum>
      </property>
      <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
+      <enum>QFrame::Sunken</enum>
      </property>
      <widget class="QWidget" name="heartbeatPlot" native="true">
       <property name="geometry">
@@ -110,7 +113,7 @@
       </property>
      </widget>
     </widget>
-    <widget class="QFrame" name="frame">
+    <widget class="QFrame" name="optionsFrame">
      <property name="geometry">
       <rect>
        <x>270</x>
@@ -123,9 +126,9 @@
       <enum>QFrame::StyledPanel</enum>
      </property>
      <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
+      <enum>QFrame::Sunken</enum>
      </property>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -136,7 +139,7 @@
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_10">
        <item alignment="Qt::AlignHCenter">
-        <widget class="QLabel" name="label_7">
+        <widget class="QLabel" name="OptionsLabel">
          <property name="text">
           <string>Options</string>
          </property>
@@ -197,14 +200,14 @@
         </layout>
        </item>
        <item>
-        <widget class="QPushButton" name="runAnalysis">
+        <widget class="QPushButton" name="runAnalysisButton">
          <property name="text">
           <string>Run Analysis</string>
          </property>
         </widget>
        </item>
        <item alignment="Qt::AlignHCenter|Qt::AlignBottom">
-        <widget class="QLabel" name="label_8">
+        <widget class="QLabel" name="progressLabel">
          <property name="text">
           <string>Analysis progress</string>
          </property>
@@ -213,7 +216,7 @@
        <item alignment="Qt::AlignTop">
         <widget class="QProgressBar" name="progressBar">
          <property name="value">
-          <number>24</number>
+          <number>0</number>
          </property>
         </widget>
        </item>
@@ -221,22 +224,25 @@
      </widget>
     </widget>
    </widget>
-   <widget class="QFrame" name="pre">
+   <widget class="QFrame" name="preExperimentFrame">
     <property name="geometry">
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>1261</width>
+      <width>1881</width>
       <height>321</height>
      </rect>
     </property>
     <property name="frameShape">
-     <enum>QFrame::StyledPanel</enum>
+     <enum>QFrame::Box</enum>
     </property>
     <property name="frameShadow">
      <enum>QFrame::Raised</enum>
     </property>
-    <widget class="QFrame" name="stimulus">
+    <property name="lineWidth">
+     <number>2</number>
+    </property>
+    <widget class="QFrame" name="stimulusFrame">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -249,7 +255,7 @@
       <enum>QFrame::StyledPanel</enum>
      </property>
      <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
+      <enum>QFrame::Sunken</enum>
      </property>
      <widget class="QWidget" name="verticalLayoutWidget">
       <property name="geometry">
@@ -283,14 +289,18 @@
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_4">
            <item alignment="Qt::AlignHCenter">
-            <widget class="QLabel" name="label">
+            <widget class="QLabel" name="preStimulusLabel">
              <property name="text">
               <string>Pre stimulus (s)</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QSpinBox" name="spinBox"/>
+            <widget class="QSpinBox" name="preSpinBox">
+             <property name="value">
+              <number>1</number>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
@@ -301,14 +311,18 @@
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_3">
            <item alignment="Qt::AlignHCenter">
-            <widget class="QLabel" name="label_2">
+            <widget class="QLabel" name="stimulusLabel">
              <property name="text">
               <string>Stimulus (s)</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QSpinBox" name="spinBox_2"/>
+            <widget class="QSpinBox" name="stimSpinBox">
+             <property name="minimum">
+              <number>1</number>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
@@ -319,14 +333,18 @@
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout">
            <item alignment="Qt::AlignHCenter">
-            <widget class="QLabel" name="label_3">
+            <widget class="QLabel" name="intervalLabel">
              <property name="text">
               <string>Interval (s)</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QSpinBox" name="spinBox_3"/>
+            <widget class="QSpinBox" name="interSpinBox">
+             <property name="value">
+              <number>1</number>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
@@ -337,35 +355,32 @@
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_2">
            <item alignment="Qt::AlignHCenter">
-            <widget class="QLabel" name="label_4">
+            <widget class="QLabel" name="numberLabel">
              <property name="text">
               <string>No. stimulus</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QSpinBox" name="spinBox_4"/>
+            <widget class="QSpinBox" name="numberSpinBox">
+             <property name="minimum">
+              <number>1</number>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
         </layout>
        </item>
-       <item>
-        <widget class="QPushButton" name="plotButton">
-         <property name="text">
-          <string>Plot Stimuli</string>
-         </property>
-        </widget>
-       </item>
       </layout>
      </widget>
     </widget>
-    <widget class="QFrame" name="plot">
+    <widget class="QFrame" name="plotFrame">
      <property name="geometry">
       <rect>
        <x>460</x>
        <y>10</y>
-       <width>521</width>
+       <width>561</width>
        <height>301</height>
       </rect>
      </property>
@@ -373,23 +388,219 @@
       <enum>QFrame::StyledPanel</enum>
      </property>
      <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
+      <enum>QFrame::Sunken</enum>
      </property>
      <widget class="QWidget" name="stimulusPlot" native="true">
       <property name="geometry">
        <rect>
         <x>10</x>
         <y>10</y>
-        <width>501</width>
+        <width>541</width>
         <height>281</height>
        </rect>
       </property>
      </widget>
     </widget>
-    <widget class="QFrame" name="run">
+    <widget class="QFrame" name="protocolFrame">
      <property name="geometry">
       <rect>
-       <x>990</x>
+       <x>1030</x>
+       <y>10</y>
+       <width>571</width>
+       <height>301</height>
+      </rect>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Sunken</enum>
+     </property>
+     <widget class="QWidget" name="verticalLayoutWidget_3">
+      <property name="geometry">
+       <rect>
+        <x>310</x>
+        <y>10</y>
+        <width>251</width>
+        <height>281</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_12">
+       <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Protocol Options</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_10">
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayout_13">
+           <item>
+            <widget class="QRadioButton" name="notRandomRadioButton">
+             <property name="text">
+              <string>Fixed order</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="randomRadioButton">
+             <property name="text">
+              <string>Random order</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_7">
+         <item>
+          <widget class="Line" name="line_4">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item alignment="Qt::AlignHCenter">
+          <widget class="QLabel" name="videoNameLabel">
+           <property name="text">
+            <string>Video Output Name</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="videoNameText">
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="autoNamingCheckbox">
+         <property name="text">
+          <string>Auto-naming</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Expanding</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>30</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="testStimulusButton">
+         <property name="text">
+          <string>Test Stimulus</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="layoutWidget">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>291</width>
+        <height>281</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_11">
+       <item alignment="Qt::AlignHCenter">
+        <widget class="QLabel" name="protocolLabel">
+         <property name="text">
+          <string>Protocol</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QListWidget" name="stimulusProtocolList">
+         <property name="showDropIndicator" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="dragEnabled">
+          <bool>false</bool>
+         </property>
+         <property name="dragDropMode">
+          <enum>QAbstractItemView::NoDragDrop</enum>
+         </property>
+         <property name="alternatingRowColors">
+          <bool>true</bool>
+         </property>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::ContiguousSelection</enum>
+         </property>
+         <property name="movement">
+          <enum>QListView::Snap</enum>
+         </property>
+         <property name="spacing">
+          <number>10</number>
+         </property>
+         <property name="modelColumn">
+          <number>0</number>
+         </property>
+         <property name="sortingEnabled">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_9">
+         <item>
+          <widget class="QSpinBox" name="channelSpinBox">
+           <property name="maximum">
+            <number>7</number>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="conditionName"/>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QPushButton" name="addConditionButton">
+         <property name="text">
+          <string>Add Condition</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="clearProtocolButton">
+         <property name="text">
+          <string>Clear</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+    <widget class="QFrame" name="runAndNotesFrame">
+     <property name="geometry">
+      <rect>
+       <x>1610</x>
        <y>10</y>
        <width>261</width>
        <height>301</height>
@@ -399,9 +610,9 @@
       <enum>QFrame::StyledPanel</enum>
      </property>
      <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
+      <enum>QFrame::Sunken</enum>
      </property>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
         <x>9</x>
@@ -411,28 +622,52 @@
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_9">
+       <item alignment="Qt::AlignHCenter">
+        <widget class="QLabel" name="notesLabel">
+         <property name="maximumSize">
+          <size>
+           <width>36</width>
+           <height>16</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Notes</string>
+         </property>
+        </widget>
+       </item>
        <item>
-        <layout class="QVBoxLayout" name="verticalLayout_7">
-         <item alignment="Qt::AlignHCenter">
-          <widget class="QLabel" name="label_5">
-           <property name="maximumSize">
-            <size>
-             <width>36</width>
-             <height>16</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Notes</string>
-           </property>
-          </widget>
-         </item>
-         <item alignment="Qt::AlignHCenter">
-          <widget class="QPlainTextEdit" name="plainTextEdit"/>
-         </item>
-        </layout>
+        <widget class="QPlainTextEdit" name="notesText"/>
+       </item>
+       <item>
+        <widget class="Line" name="line_3">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="lineEdit_3">
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="setOutputDirectory">
+         <property name="text">
+          <string>Set Directory...</string>
+         </property>
+        </widget>
        </item>
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_8">
+         <item>
+          <widget class="Line" name="line_2">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
          <item>
           <widget class="QPushButton" name="runButton">
            <property name="minimumSize">
@@ -458,6 +693,25 @@
       </layout>
      </widget>
     </widget>
+   </widget>
+   <widget class="QFrame" name="frame_2">
+    <property name="geometry">
+     <rect>
+      <x>1280</x>
+      <y>340</y>
+      <width>611</width>
+      <height>421</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <property name="lineWidth">
+     <number>2</number>
+    </property>
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>

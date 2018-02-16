@@ -44,6 +44,14 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
 #******************************************************************************
 
+        self.channelsTaken = []
+        self.conditions = []
+
+        # Updates the stimulus plot to show a standard stimulus protocol
+        self.updateStimulusPlot()
+
+#******************************************************************************
+
         # When the values of the stimulus protocol change, 'updateStimulusPlot'
         # will trigger
         self.preSpinBox.valueChanged.connect(self.updateStimulusPlot)
@@ -53,13 +61,14 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
 #******************************************************************************
 
-        self.runButton.clicked.connect(self.runExperiment)
-        self.cancelButton.clicked.connect(self.terminateExperiment)
+        self.addConditionButton.clicked.connect(self.addToProtocol)
+        self.clearProtocolButton.clicked.connect(self.clearProtocol)
+
+        self.testStimulusButton.clicked.connect(self.testStimulus)
 
 #******************************************************************************
 
-        # Updates the stimulus plot to show a standard stimulus protocol
-        self.updateStimulusPlot()
+        self.autoNamingCheckbox.stateChanged.connect(self.autoNamingChange)
 
 #******************************************************************************
 
@@ -70,6 +79,12 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
         # Timer for sending a signal to hardware
         self.signalTimer = QtCore.QTimer()
         self.signalTimer.timeout.connect(self.sendSignal)
+        self.stimulus = 1000
+
+#******************************************************************************
+
+        self.runButton.clicked.connect(self.runExperiment)
+        self.cancelButton.clicked.connect(self.terminateExperiment)
 
 #******************************************************************************
 
@@ -108,6 +123,8 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
         interval = self.interSpinBox.value()
         repeats = self.numberSpinBox.value()
 
+        self.stimulus = stimulus * 1000
+
 
         x = [0]
         y = [0]
@@ -145,7 +162,78 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.graph.plotStimulus()
         self.graph.draw()
 
+        if len(self.channelsTaken) >= repeats:
+
+            self.stimulusProtocolList.takeItem(repeats)
+
+            self.conditions = self.conditions[:-1]
+            self.channelsTaken = self.conditions[:-1]
+
 #******************************************************************************
+
+    """
+    This function populates the stimulus protocol list with conditions entered by
+    the user. A condition is a condition name and a output channel number.
+    """
+
+    def addToProtocol(self):
+
+        channel = str(self.channelSpinBox.value())
+
+        condition = self.conditionName.text()
+
+        item = channel + "    - " + condition
+
+        if channel not in self.channelsTaken and \
+            len(self.channelsTaken) < self.numberSpinBox.value():
+
+            self.stimulusProtocolList.addItem(item)
+
+            self.channelsTaken.append(channel)
+            self.conditions.append(condition)
+
+            self.stimulusProtocolList.setCurrentRow(0)
+
+#******************************************************************************
+
+    """
+    This function enables the user to test out a stimulus.
+    """
+
+    def testStimulus(self):
+
+        if len(self.conditions) is not 0:
+
+            index = self.stimulusProtocolList.currentRow()
+            print(self.conditions[index])
+        else:
+
+
+
+#******************************************************************************
+
+    """
+    This function clears the stimulus protocol list.
+    """
+
+    def clearProtocol(self):
+
+            self.stimulusProtocolList.clear()
+            self.channelsTaken = []
+            self.conditions = []
+
+#******************************************************************************
+
+    """
+    This function enables/disables custom file names.
+    """
+
+    def autoNamingChange(self):
+
+        self.videoNameText.setReadOnly(self.autoNamingCheckbox.checkState())
+
+#******************************************************************************
+
 
     """
     This function will run 'plotStimulus' under different conditions, since the
@@ -194,5 +282,7 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
             self.terminateExperiment()
             return
 
+
         if self.graph.yBleep == 1:
-            print("clickClack")
+
+            print("bleep")
