@@ -78,7 +78,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="setDirectoryButton">
+        <widget class="QPushButton" name="setInputDirectoryButton">
          <property name="text">
           <string>Set Directory...</string>
          </property>
@@ -406,7 +406,7 @@
       <rect>
        <x>1030</x>
        <y>10</y>
-       <width>571</width>
+       <width>521</width>
        <height>301</height>
       </rect>
      </property>
@@ -419,7 +419,7 @@
      <widget class="QWidget" name="verticalLayoutWidget_3">
       <property name="geometry">
        <rect>
-        <x>310</x>
+        <x>260</x>
         <y>10</y>
         <width>251</width>
         <height>281</height>
@@ -523,7 +523,7 @@
        <rect>
         <x>10</x>
         <y>10</y>
-        <width>291</width>
+        <width>241</width>
         <height>281</height>
        </rect>
       </property>
@@ -546,6 +546,9 @@
          <property name="dragDropMode">
           <enum>QAbstractItemView::NoDragDrop</enum>
          </property>
+         <property name="defaultDropAction">
+          <enum>Qt::IgnoreAction</enum>
+         </property>
          <property name="alternatingRowColors">
           <bool>true</bool>
          </property>
@@ -553,7 +556,7 @@
           <enum>QAbstractItemView::ContiguousSelection</enum>
          </property>
          <property name="movement">
-          <enum>QListView::Snap</enum>
+          <enum>QListView::Static</enum>
          </property>
          <property name="spacing">
           <number>10</number>
@@ -570,6 +573,9 @@
         <layout class="QHBoxLayout" name="horizontalLayout_9">
          <item>
           <widget class="QSpinBox" name="channelSpinBox">
+           <property name="buttonSymbols">
+            <enum>QAbstractSpinBox::PlusMinus</enum>
+           </property>
            <property name="maximum">
             <number>7</number>
            </property>
@@ -600,9 +606,9 @@
     <widget class="QFrame" name="runAndNotesFrame">
      <property name="geometry">
       <rect>
-       <x>1610</x>
+       <x>1560</x>
        <y>10</y>
-       <width>261</width>
+       <width>311</width>
        <height>301</height>
       </rect>
      </property>
@@ -617,7 +623,7 @@
        <rect>
         <x>9</x>
         <y>9</y>
-        <width>241</width>
+        <width>291</width>
         <height>281</height>
        </rect>
       </property>
@@ -646,14 +652,14 @@
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="lineEdit_3">
+        <widget class="QLineEdit" name="outputDirectoryText">
          <property name="readOnly">
           <bool>true</bool>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="setOutputDirectory">
+        <widget class="QPushButton" name="setOutputDirectoryButton">
          <property name="text">
           <string>Set Directory...</string>
          </property>

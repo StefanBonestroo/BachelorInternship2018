@@ -31,8 +31,8 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
 #******************************************************************************
 
-        # Triggers 'setDirectory' on the button press
-        self.setDirectoryButton.clicked.connect(self.setDirectory)
+        # Triggers 'setInputDirectory' on the button press
+        self.setInputDirectoryButton.clicked.connect(self.setInputDirectory)
 
 #******************************************************************************
 
@@ -70,6 +70,8 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
         self.autoNamingCheckbox.stateChanged.connect(self.autoNamingChange)
 
+        self.setOutputDirectoryButton.clicked.connect(self.setOutputDirectory)
+
 #******************************************************************************
 
         # Timer for the little stimulus bleep
@@ -79,7 +81,6 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
         # Timer for sending a signal to hardware
         self.signalTimer = QtCore.QTimer()
         self.signalTimer.timeout.connect(self.sendSignal)
-        self.stimulus = 1000
 
 #******************************************************************************
 
@@ -92,7 +93,7 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
     This function lets the user pick a directory and will present all relevant
     files inside a QListWidget (video files in our case).
     """
-    def setDirectory(self):
+    def setInputDirectory(self):
 
         # The list is cleared
         self.videoList.clear()
@@ -122,9 +123,6 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
         stimulus = self.stimSpinBox.value()
         interval = self.interSpinBox.value()
         repeats = self.numberSpinBox.value()
-
-        self.stimulus = stimulus * 1000
-
 
         x = [0]
         y = [0]
@@ -162,12 +160,12 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.graph.plotStimulus()
         self.graph.draw()
 
-        if len(self.channelsTaken) >= repeats:
+        if len(self.channelsTaken) > repeats:
 
             self.stimulusProtocolList.takeItem(repeats)
 
             self.conditions = self.conditions[:-1]
-            self.channelsTaken = self.conditions[:-1]
+            self.channelsTaken = self.channelsTaken[:-1]
 
 #******************************************************************************
 
@@ -232,6 +230,17 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
 #******************************************************************************
 
+    """
+    This function changes the path where the output will be saved in.
+    """
+    def setOutputDirectory(self):
+
+        # A directory picker is opened
+        directory = QtWidgets.QFileDialog.getExistingDirectory(self,"Choose your directory")
+
+        self.outputDirectoryText.setText(directory)
+
+#******************************************************************************
 
     """
     This function will run 'plotStimulus' under different conditions, since the
@@ -279,7 +288,6 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
             self.terminateExperiment()
             return
-
 
         if self.graph.yBleep == 1:
 
