@@ -206,8 +206,6 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
             index = self.stimulusProtocolList.currentRow()
             print(self.conditions[index])
-        else:
-
 
 
 #******************************************************************************
