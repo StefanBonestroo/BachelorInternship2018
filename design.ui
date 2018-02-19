@@ -102,7 +102,7 @@
      <property name="frameShadow">
       <enum>QFrame::Sunken</enum>
      </property>
-     <widget class="QWidget" name="heartbeatPlot" native="true">
+     <widget class="QWidget" name="videoPreview" native="true">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -138,12 +138,16 @@
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_10">
-       <item alignment="Qt::AlignHCenter">
-        <widget class="QLabel" name="OptionsLabel">
-         <property name="text">
-          <string>Options</string>
-         </property>
-        </widget>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_16">
+         <item alignment="Qt::AlignHCenter">
+          <widget class="QLabel" name="OptionsLabel">
+           <property name="text">
+            <string>Options</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_7">
@@ -200,25 +204,43 @@
         </layout>
        </item>
        <item>
-        <widget class="QPushButton" name="runAnalysisButton">
-         <property name="text">
-          <string>Run Analysis</string>
-         </property>
-        </widget>
+        <layout class="QVBoxLayout" name="verticalLayout_15">
+         <item>
+          <widget class="QPushButton" name="runAnalysisButton">
+           <property name="text">
+            <string>Run Analysis</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="updateFrequencyPlotButton">
+           <property name="text">
+            <string>Update Plots</string>
+           </property>
+           <property name="flat">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
-       <item alignment="Qt::AlignHCenter|Qt::AlignBottom">
-        <widget class="QLabel" name="progressLabel">
-         <property name="text">
-          <string>Analysis progress</string>
-         </property>
-        </widget>
-       </item>
-       <item alignment="Qt::AlignTop">
-        <widget class="QProgressBar" name="progressBar">
-         <property name="value">
-          <number>0</number>
-         </property>
-        </widget>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_14">
+         <item alignment="Qt::AlignHCenter">
+          <widget class="QLabel" name="progressLabel">
+           <property name="text">
+            <string>Analysis progress</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QProgressBar" name="progressBar">
+           <property name="value">
+            <number>0</number>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>
@@ -718,6 +740,16 @@
     <property name="lineWidth">
      <number>2</number>
     </property>
+    <widget class="QWidget" name="frequencyPlot" native="true">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>591</width>
+       <height>401</height>
+      </rect>
+     </property>
+    </widget>
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
