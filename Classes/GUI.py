@@ -233,7 +233,7 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
             self.conditions = []
 
             self.graph.conditionLabels = []
-            self.graph.updateStimulusPlot()
+            self.updateStimulusPlot()
 
 #******************************************************************************
 
@@ -319,6 +319,8 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
     def runAnalysis(self):
 
+        self.progressBar.setValue(0)
+
         selectedVideo = self.videoList.currentItem()
 
         if not selectedVideo:
@@ -331,19 +333,24 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
         processor = VideoProcessor(path)
         processor.frameGrabber()
 
+        self.progressBar.setValue(50)
+
         writer = cv2.VideoWriter('video.mp4', cv2.VideoWriter_fourcc(*'XVID'), 30,
                 processor.dimensions)
 
-        increment = 100/len(processor.processedFrames)
+        increment = float(50/len(processor.processedFrames))
+        total = 50.0
 
         for frame in processor.processedFrames:
 
             cv2.imshow("frame",frame)
             cv2.waitKey(2)
 
-            previousValue = self.progressBar.value()
+            self.progressBar.setValue(total)
 
-            self.progressBar.setValue(previousValue + increment)
+            total += increment
+
+        self.progressBar.setValue(100)
 
         # When everything's done, release the video capture and video write objects
         writer.release()
@@ -351,8 +358,6 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
         # Closes all the frames
         cv2.destroyAllWindows()
         print("done")
-
-
 
 #******************************************************************************
 
