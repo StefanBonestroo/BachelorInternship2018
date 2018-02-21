@@ -6,7 +6,7 @@ interactions a user can have with it.
 
 created by: Stefan Bonestroo
 date created: 08/02/2018
-date last modified: 13/02/2018
+date last modified: 21/02/2018
 """
 
 import os
@@ -15,7 +15,10 @@ import sys
 import random
 import time
 
+from Classes.VideoProcessor import VideoProcessor
+
 import design
+import cv2
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 from Classes.StimulusPlot import StimulusPlotCanvas
@@ -33,6 +36,8 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
         # Triggers 'setInputDirectory' on the button press
         self.setInputDirectoryButton.clicked.connect(self.setInputDirectory)
+
+        self.videoDirectory = None
 
 #******************************************************************************
 
@@ -57,6 +62,7 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.preSpinBox.valueChanged.connect(self.updateStimulusPlot)
         self.stimSpinBox.valueChanged.connect(self.updateStimulusPlot)
         self.interSpinBox.valueChanged.connect(self.updateStimulusPlot)
+
         self.numberSpinBox.valueChanged.connect(self.updateStimulusPlot)
 
 #******************************************************************************
@@ -89,6 +95,10 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
 #******************************************************************************
 
+        self.runAnalysisButton.clicked.connect(self.runAnalysis)
+
+#******************************************************************************
+
     """
     This function lets the user pick a directory and will present all relevant
     files inside a QListWidget (video files in our case).
@@ -99,14 +109,14 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.videoList.clear()
 
         # A directory picker is opened
-        directory = QtWidgets.QFileDialog.getExistingDirectory(self,"Choose your directory")
+        self.videoDirectory = QtWidgets.QFileDialog.getExistingDirectory(self,"Choose your directory")
 
         # If a directory has been chosen, iterate over all files en add all videofiles to the list
-        if directory:
+        if self.videoDirectory:
 
-            for video in os.listdir(directory):
+            for video in os.listdir(self.videoDirectory):
 
-                if video.endswith(".mov") or video.endswith(".avi"):
+                if video.endswith(".mov") or video.endswith(".mp4"):
 
                     self.videoList.addItem(video)
 
@@ -122,7 +132,7 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
         pre = self.preSpinBox.value()
         stimulus = self.stimSpinBox.value()
         interval = self.interSpinBox.value()
-        repeats = self.numberSpinBox.value()
+        amountOfStimuli = self.numberSpinBox.value()
 
         x = [0]
         y = [0]
@@ -134,8 +144,8 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
         time = pre
 
         # Since a stimulus can be presented multiple times, the same combo of
-        # stimulus + interval will be pasted n ('repeats') times
-        for repeat in range(repeats):
+        # stimulus + interval will be pasted n ('amountOfStimuli') times
+        for repeat in range(amountOfStimuli):
 
             time += stimulus
             x.append(time)
@@ -160,9 +170,9 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.graph.plotStimulus()
         self.graph.draw()
 
-        if len(self.channelsTaken) > repeats:
+        if len(self.channelsTaken) > amountOfStimuli:
 
-            self.stimulusProtocolList.takeItem(repeats)
+            self.stimulusProtocolList.takeItem(amountOfStimuli)
 
             self.conditions = self.conditions[:-1]
             self.channelsTaken = self.channelsTaken[:-1]
@@ -186,11 +196,14 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
             len(self.channelsTaken) < self.numberSpinBox.value():
 
             self.stimulusProtocolList.addItem(item)
-
             self.channelsTaken.append(channel)
+
             self.conditions.append(condition)
+            self.graph.conditionLabels.append(condition)
 
             self.stimulusProtocolList.setCurrentRow(0)
+
+            self.updateStimulusPlot()
 
 #******************************************************************************
 
@@ -215,8 +228,12 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
     def clearProtocol(self):
 
             self.stimulusProtocolList.clear()
+
             self.channelsTaken = []
             self.conditions = []
+
+            self.graph.conditionLabels = []
+            self.graph.updateStimulusPlot()
 
 #******************************************************************************
 
@@ -292,3 +309,54 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
         if self.graph.yBleep == 1:
 
             print("bleep")
+
+#******************************************************************************
+
+    """
+    This function runs the analysis of the selected video material when 'Run Analysis'
+    is pressed.
+    """
+
+    def runAnalysis(self):
+
+        selectedVideo = self.videoList.currentItem()
+
+        if not selectedVideo:
+            print("No video was selected")
+
+        self.videoDirectory = self.videoDirectory.replace(' ', '\ ')
+
+        path = self.videoDirectory + "/" + selectedVideo.text()
+
+        processor = VideoProcessor(path)
+        processor.frameGrabber()
+
+        writer = cv2.VideoWriter('video.mp4', cv2.VideoWriter_fourcc(*'XVID'), 30,
+                processor.dimensions)
+
+        increment = 100/len(processor.processedFrames)
+
+        for frame in processor.processedFrames:
+
+            cv2.imshow("frame",frame)
+            cv2.waitKey(2)
+
+            previousValue = self.progressBar.value()
+
+            self.progressBar.setValue(previousValue + increment)
+
+        # When everything's done, release the video capture and video write objects
+        writer.release()
+
+        # Closes all the frames
+        cv2.destroyAllWindows()
+        print("done")
+
+
+
+#******************************************************************************
+
+
+
+
+#******************************************************************************

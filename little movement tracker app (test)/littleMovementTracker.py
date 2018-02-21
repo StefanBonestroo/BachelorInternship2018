@@ -54,8 +54,9 @@ view = figure.add_subplot(1,1,1)
 # Counter for x data
 start = time.time()
 
-# A certain amount of frames is captured and analyzed
-for i in range(0,framesToBeCaptured):
+# # A certain amount of frames is captured and analyzed
+# for i in range(0,framesToBeCaptured):
+while (True):
 
     succesfullyGrabbed, frame = capture.read()
 
@@ -97,9 +98,9 @@ for i in range(0,framesToBeCaptured):
         # After the frame is displayed, make that frame reference for next iteration
         referenceFrame = currentFrame
 
-    # Break the loop
-    else:
-        break
+    # # Break the loop
+    # else:
+    #     break
 
 # When everything done, release the video capture and video write objects
 capture.release()

@@ -8,7 +8,7 @@ little bleep that displays where you are in the experiment.
 
 created by: Stefan Bonestroo
 date created: 08/02/2018
-date last modified: 13/02/2018
+date last modified: 21/02/2018
 
 """
 
@@ -27,7 +27,23 @@ class StimulusPlotCanvas(FigureCanvas):
         # The figure and subplot to be viewed on the canvas will be initiated
         fig = Figure(figsize = (width, height), dpi = dpi)
         fig.subplots_adjust(left = 0, right = 1, bottom = 0.1 , top = 0.8)
+
         self.axes = fig.add_subplot(111)
+
+        self.conditionLabels = []
+
+#*******************************************************************************
+
+        FigureCanvas.__init__(self, fig)
+        self.setParent(parent)
+
+        # It should fit nicely inside of the widget box
+        FigureCanvas.setSizePolicy(self,
+                                   QtWidgets.QSizePolicy.Expanding,
+                                   QtWidgets.QSizePolicy.Expanding)
+
+        FigureCanvas.updateGeometry(self)
+
 
 #*******************************************************************************
 
@@ -52,18 +68,6 @@ class StimulusPlotCanvas(FigureCanvas):
 
 #*******************************************************************************
 
-        FigureCanvas.__init__(self, fig)
-        self.setParent(parent)
-
-        # It should fit nicely inside of the widget box
-        FigureCanvas.setSizePolicy(self,
-                                   QtWidgets.QSizePolicy.Expanding,
-                                   QtWidgets.QSizePolicy.Expanding)
-
-        FigureCanvas.updateGeometry(self)
-
-#*******************************************************************************
-
     """
     This function handles the plotting and other visual aspects of the plot
     """
@@ -81,6 +85,8 @@ class StimulusPlotCanvas(FigureCanvas):
 
         self.axes.plot(self.x, self.y, drawstyle="steps-post")
         self.axes.plot(self.xBleep, self.yBleep, 'ro')
+
+        self.placeLabels()
 
 #*******************************************************************************
 
@@ -103,16 +109,49 @@ class StimulusPlotCanvas(FigureCanvas):
         if self.xBleep >= (self.x[self.counter]):
             self.counter += 1
 
-
         self.yBleep = self.y[self.counter - 1]
 
         # The plot is cleared and re-plotted
         self.axes.cla()
         self.axes.plot(self.x, self.y, drawstyle = "steps-post", zorder = 0)
         self.axes.plot(self.xBleep, self.yBleep, 'ro', zorder = 1)
+
+        self.placeLabels()
+
+        # Draw the plot
         self.draw()
 
         self.intervalsPassed += 1
+
+#*******************************************************************************
+    """
+    This function places the labels above the stimuli and will change the color of
+    the label of the active stimulus.
+    """
+    def placeLabels(self):
+
+        # Every uneven index number is stimulus activation point
+        stimPoint = 1
+
+        # Place the conditions above the stimulus position, one by one
+        for label in self.conditionLabels:
+
+            # The x where of where the centre of the label should go is the average
+            # between the activation point and deactivation point
+            x = (self.x[stimPoint] +  self.x[stimPoint + 1]) / 2
+            y = 1.2
+
+            # The stimulus label will light up when on
+            if self.xBleep >= self.x[stimPoint] and self.xBleep < self.x[stimPoint + 1]:
+                color = 'red'
+            else:
+                color = 'white'
+
+            self.axes.text(x, y , label, \
+                            bbox = dict(facecolor = color, alpha = 0.3), \
+                            horizontalalignment='center', verticalalignment='center')
+
+            stimPoint += 2
 
 #*******************************************************************************
 
