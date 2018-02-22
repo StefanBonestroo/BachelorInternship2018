@@ -60,7 +60,7 @@ class StimulusPlotCanvas(FigureCanvas):
         # stored here
         self.runningTime = 0
 
-        self.bleepInterval = 100    # Needs to be multiplicable to a 1000
+        self.bleepInterval = 200    # Needs to be multiplicable to a 1000
         self.intervalsPassed = 0
         self.counter = 0
 
