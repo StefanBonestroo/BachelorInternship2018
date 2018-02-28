@@ -6,7 +6,7 @@ interactions a user can have with it.
 
 created by: Stefan Bonestroo
 date created: 08/02/2018
-date last modified: 21/02/2018
+date last modified: 28/02/2018
 """
 
 import os
@@ -17,7 +17,6 @@ import threading
 
 import cv2
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyDAQmx import *
 
 import design
 from Classes.StimulusPlot import StimulusPlotCanvas
@@ -37,7 +36,6 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
         # Triggers 'setInputDirectory' on the button press
         self.setInputDirectoryButton.clicked.connect(self.setInputDirectory)
-
         self.videoDirectory = None
 
 #******************************************************************************
@@ -50,6 +48,7 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
 #******************************************************************************
 
+        # The user can append a stimulus protocol to these arrays
         self.channelsTaken = []
         self.conditions = []
 
@@ -63,7 +62,6 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.preSpinBox.valueChanged.connect(self.updateStimulusPlot)
         self.stimSpinBox.valueChanged.connect(self.updateStimulusPlot)
         self.interSpinBox.valueChanged.connect(self.updateStimulusPlot)
-
         self.numberSpinBox.valueChanged.connect(self.updateStimulusPlot)
 
 #******************************************************************************
@@ -101,6 +99,8 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 #******************************************************************************
 
         self.playVideoButton.clicked.connect(self.playPreviewVideo)
+
+#******************************************************************************
 
     """
     This function lets the user pick a directory and will present all relevant
@@ -195,6 +195,8 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
         item = channel + "    - " + condition
 
+        # The user can only enter as much conditions as there are stimuli
+        # Also, a already taken channel cannot be picked
         if channel not in self.channelsTaken and \
             len(self.channelsTaken) < self.numberSpinBox.value():
 
@@ -203,6 +205,9 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
             self.conditions.append(condition)
             self.graph.conditionLabels.append(condition)
+
+            # Automatic channel increment
+            self.channelSpinBox.setValue(self.channelSpinBox.value() + 1)
 
             self.stimulusProtocolList.setCurrentRow(0)
 
@@ -246,6 +251,8 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
     def autoNamingChange(self):
 
+        # The video name text field is read-only if the box is checked, and
+        # will not be used when this is the case
         self.videoNameText.setReadOnly(self.autoNamingCheckbox.checkState())
 
 #******************************************************************************
@@ -277,6 +284,8 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
         # milliseconds. This means that 'bleepShower' is triggered every 'bleepInterval' ms
         self.bleepTimer.start(self.graph.bleepInterval)
 
+        # This initiates the deviceController thread, so visualizations and the
+        # stimulus protocol can be run at the same time
         self.deviceController.start()
 
 
@@ -307,18 +316,23 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
         if not selectedVideo:
             print("No video was selected")
 
+        # Makes the file/folder names readable by making spaces readable
         self.videoDirectory = self.videoDirectory.replace(' ', '\ ')
 
         path = self.videoDirectory + "/" + selectedVideo.text()
 
+        # A videoProcessor object is created and the frameGrabber function inside
+        # of it will grab every single frame of a video and append its RGB values to an array
         self.processor = VideoProcessor(path)
         self.processor.frameGrabber()
 
         self.progressBar.setValue(50)
 
+        # Smooth progressBar increments
         increment = float(50/len(processor.processedFrames))
         total = 50.0
 
+        # Every frame is shown after processing
         for frame in self.processor.processedFrames:
 
             cv2.imshow("frame",frame)
@@ -347,6 +361,7 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
             self.videoPreviewLabel.setPixmap(framePictured)
 
+            # 30 frames per 1000 ms (30fps)
             cv2.waitKey(int(1000/30))
 
 #******************************************************************************
@@ -357,8 +372,8 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
     def updateController(self):
 
         self.deviceController = DeviceController(self.graph.x, self.graph.y, \
-                                            self.channelsTaken, self.conditions, \
-                                            self.notRandomRadioButton.isChecked())
+                                                self.conditions, self.graph.runningTime, \
+                                                self.notRandomRadioButton.isChecked())
 
 
 #******************************************************************************
