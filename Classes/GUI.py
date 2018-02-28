@@ -11,17 +11,18 @@ date last modified: 21/02/2018
 
 import os
 import sys
-
 import random
 import time
+import threading
 
-from Classes.VideoProcessor import VideoProcessor
-
-import design
 import cv2
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyDAQmx import *
 
+import design
 from Classes.StimulusPlot import StimulusPlotCanvas
+from Classes.VideoProcessor import VideoProcessor
+from Classes.Controller import DeviceController
 
 class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
@@ -84,14 +85,13 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.bleepTimer = QtCore.QTimer()
         self.bleepTimer.timeout.connect(self.graph.bleepShower)
 
-        # Timer for sending a signal to hardware
-        self.signalTimer = QtCore.QTimer()
-        self.signalTimer.timeout.connect(self.sendSignal)
-
 #******************************************************************************
 
         self.runButton.clicked.connect(self.runExperiment)
         self.cancelButton.clicked.connect(self.terminateExperiment)
+
+        self.deviceController = None
+        self.updateController()
 
 #******************************************************************************
 
@@ -268,18 +268,17 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
     """
     def runExperiment(self):
 
-        x = self.graph.x
+        self.updateController()
 
         # The last value of the x list will be the total running time
-        self.graph.runningTime = x[len(x) - 1]
-        self.graph.startingTime = time.time()
-
-        # The connection that this timer has will be executed every second
-        self.signalTimer.start(self.graph.oneSecond)
+        self.graph.runningTime = self.graph.x[len(self.graph.x) - 1]
 
         # The connection that this timer has will be executed every 'bleepInterval'
         # milliseconds. This means that 'bleepShower' is triggered every 'bleepInterval' ms
         self.bleepTimer.start(self.graph.bleepInterval)
+
+        self.deviceController.start()
+
 
 #******************************************************************************
 
@@ -289,7 +288,6 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
     def terminateExperiment(self):
 
         self.bleepTimer.stop()
-        self.signalTimer.stop()
 
         self.graph.resetStuff()
         self.updateStimulusPlot()
@@ -297,29 +295,9 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 #******************************************************************************
 
     """
-    This function makes sure that, during the running of an experiment, certain
-    signals can be sent to an experiment's equipment.
-    """
-    def sendSignal(self):
-
-        # When we have reached our total running time the triggering of this function
-        # should cease, and all values concerning the run should be reset
-        if self.graph.xBleep == self.graph.runningTime:
-
-            self.terminateExperiment()
-            return
-
-        if self.graph.yBleep == 1:
-
-            print("bleep")
-
-#******************************************************************************
-
-    """
     This function runs the analysis of the selected video material when 'Run Analysis'
     is pressed.
     """
-
     def runAnalysis(self):
 
         self.progressBar.setValue(0)
@@ -338,10 +316,7 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
         self.progressBar.setValue(50)
 
-        writer = cv2.VideoWriter('video.mp4', cv2.VideoWriter_fourcc(*'XVID'), 30,
-                self.processor.dimensions)
-
-        increment = float(50/len(self.processor.processedFrames))
+        increment = float(50/len(processor.processedFrames))
         total = 50.0
 
         for frame in self.processor.processedFrames:
@@ -354,9 +329,6 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
             total += increment
 
         self.progressBar.setValue(100)
-
-        # When everything's done, release the video capture and video write objects
-        writer.release()
 
         # Closes all the frames
         cv2.destroyAllWindows()
@@ -377,11 +349,16 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
             cv2.waitKey(int(1000/30))
 
+#******************************************************************************
 
+    """
+    This function updates the values of the stimulusProtocol inside of the controller
+    """
+    def updateController(self):
 
-
-
-
+        self.deviceController = DeviceController(self.graph.x, self.graph.y, \
+                                            self.channelsTaken, self.conditions, \
+                                            self.notRandomRadioButton.isChecked())
 
 
 #******************************************************************************

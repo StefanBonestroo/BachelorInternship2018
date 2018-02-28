@@ -2,3 +2,4 @@ matplotlib==2.1.0
 numpy==1.13.3
 PyQt5==5.10
 opencv-python==3.4.0.12
+PyDAQmx==1.4.1
