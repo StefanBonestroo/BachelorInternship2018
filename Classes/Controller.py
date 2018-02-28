@@ -57,9 +57,9 @@ class DeviceController(threading.Thread):
 
 #*******************************************************************************
 
-"""
-This inherited function will run the thread and run the stimulus protocol on it.
-"""
+    """
+    This inherited function will run the thread and run the stimulus protocol on it.
+    """
     def run(self):
 
         self.counter = 0
