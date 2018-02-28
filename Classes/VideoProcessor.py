@@ -15,6 +15,8 @@ import cv2
 import time
 import numpy as np
 
+from PyQt5 import QtCore, QtGui, QtWidgets
+
 class VideoProcessor:
 
     def __init__(self, path):
@@ -22,10 +24,16 @@ class VideoProcessor:
         self.path = path
 
         self.grabbedFrames = []
+        self.grabbedPreviewFrames = []
 
         self.processedFrames = []
+        self.processedPreviewFrames = []
 
         self.dimensions = None
+
+        self.previewDimensions = (500, 281)
+
+        self.fps = 30
 
 #*******************************************************************************
 
@@ -47,7 +55,16 @@ class VideoProcessor:
             succesful, frame = capture.read()
 
             if succesful:
+
                 self.grabbedFrames.append(frame)
+
+                # The unprocessed are made to also have preview versions
+                preview = cv2.resize(frame, self.previewDimensions)
+                preview = bytearray(preview)
+                preview = QtCore.QByteArray(preview)
+
+                self.grabbedPreviewFrames.append(preview)
+
             else:
                 break
 
@@ -92,5 +109,12 @@ class VideoProcessor:
 
             # The processed frame will be stored in an array
             self.processedFrames.append(threshold)
+
+            # A preview of the processed frame is made
+            preview = cv2.resize(threshold, self.previewDimensions)
+            preview = bytearray(preview)
+            preview = QtCore.QByteArray(preview)
+
+            self.processedPreviewFrames.append(preview)
 
         self.dimensions = threshold.shape

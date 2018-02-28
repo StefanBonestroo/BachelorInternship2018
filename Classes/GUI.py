@@ -96,8 +96,11 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 #******************************************************************************
 
         self.runAnalysisButton.clicked.connect(self.runAnalysis)
+        self.processor = None
 
 #******************************************************************************
+
+        self.playVideoButton.clicked.connect(self.playPreviewVideo)
 
     """
     This function lets the user pick a directory and will present all relevant
@@ -330,18 +333,18 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
         path = self.videoDirectory + "/" + selectedVideo.text()
 
-        processor = VideoProcessor(path)
-        processor.frameGrabber()
+        self.processor = VideoProcessor(path)
+        self.processor.frameGrabber()
 
         self.progressBar.setValue(50)
 
         writer = cv2.VideoWriter('video.mp4', cv2.VideoWriter_fourcc(*'XVID'), 30,
-                processor.dimensions)
+                self.processor.dimensions)
 
-        increment = float(50/len(processor.processedFrames))
+        increment = float(50/len(self.processor.processedFrames))
         total = 50.0
 
-        for frame in processor.processedFrames:
+        for frame in self.processor.processedFrames:
 
             cv2.imshow("frame",frame)
             cv2.waitKey(2)
@@ -360,6 +363,23 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
         print("done")
 
 #******************************************************************************
+    """
+    This function plays a preview video.
+    """
+    def playPreviewVideo(self):
+
+        for frame in self.processor.grabbedFrames:
+
+            framePictured = QtGui.QPixmap()
+            framePictured.loadFromData(frame)
+
+            self.videoPreviewLabel.setPixmap(framePictured)
+
+            cv2.waitKey(int(1000/30))
+
+
+
+
 
 
 
