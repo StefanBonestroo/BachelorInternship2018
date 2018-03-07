@@ -52,11 +52,14 @@ date last modified: 07-03-2017
 
 """
 
-from PyQt5.QtCore import QDir, Qt, QUrl
+import time
+
+from PyQt5.QtCore import QDir, Qt, QUrl, QRect
+import PyQt5.QtGui
 from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
 from PyQt5.QtMultimediaWidgets import QVideoWidget
 from PyQt5.QtWidgets import (QApplication, QFileDialog, QHBoxLayout, QLabel,
-        QPushButton, QSizePolicy, QSlider, QStyle, QVBoxLayout, QWidget)
+        QPushButton, QSizePolicy, QSlider, QStyle, QVBoxLayout, QWidget, QSpacerItem)
 
 class VideoPlayer(QWidget):
 
@@ -66,10 +69,8 @@ class VideoPlayer(QWidget):
 
         self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
 
-        videoWidget = QVideoWidget()
-
-        openButton = QPushButton("Load...")
-        openButton.clicked.connect(self.openFile)
+        self.videoWidget = QVideoWidget()
+        self.videoWidget.setMinimumSize(501,281)
 
         self.playButton = QPushButton()
         self.playButton.setEnabled(False)
@@ -80,24 +81,21 @@ class VideoPlayer(QWidget):
         self.positionSlider.setRange(0, 0)
         self.positionSlider.sliderMoved.connect(self.setPosition)
 
-        self.errorLabel = QLabel()
-        self.errorLabel.setSizePolicy(QSizePolicy.Preferred,
-                QSizePolicy.Maximum)
-
         controlLayout = QHBoxLayout()
-        controlLayout.setContentsMargins(0, 0, 0, 0)
-        controlLayout.addWidget(openButton)
+        controlLayout.setContentsMargins(0,0,0,0)
         controlLayout.addWidget(self.playButton)
         controlLayout.addWidget(self.positionSlider)
+        controlLayout.setAlignment(Qt.AlignBottom)
 
-        layout = QVBoxLayout()
-        layout.addWidget(videoWidget)
-        layout.addLayout(controlLayout)
-        layout.addWidget(self.errorLabel)
+        superLayout = QVBoxLayout()
 
-        self.setLayout(layout)
+        superLayout.addWidget(self.videoWidget)
+        superLayout.addLayout(controlLayout)
 
-        self.mediaPlayer.setVideoOutput(videoWidget)
+
+        self.setLayout(superLayout)
+
+        self.mediaPlayer.setVideoOutput(self.videoWidget)
         self.mediaPlayer.stateChanged.connect(self.mediaStateChanged)
         self.mediaPlayer.positionChanged.connect(self.positionChanged)
         self.mediaPlayer.durationChanged.connect(self.durationChanged)
@@ -105,12 +103,13 @@ class VideoPlayer(QWidget):
 
         self.videoPath = None
 
-
     def openFile(self):
 
-        if self.selectedVideoPath != None:
+        if self.videoPath != None:
 
-            self.mediaPlayer.setMedia(QUrl.fromLocalFile(self.videoPath))
+            content = QMediaContent(QUrl.fromLocalFile(self.videoPath))
+
+            self.mediaPlayer.setMedia(content)
             self.playButton.setEnabled(True)
 
     def play(self):
@@ -119,6 +118,8 @@ class VideoPlayer(QWidget):
             self.mediaPlayer.pause()
         else:
             self.mediaPlayer.play()
+            self.videoWidget.setAspectRatioMode(Qt.KeepAspectRatio)
+            self.videoWidget.setFixedSize(500, 281)
 
     def mediaStateChanged(self, state):
 

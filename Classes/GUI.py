@@ -101,7 +101,9 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
         self.videoPath = None
 
-        self.videoWidget = VideoPlayer()
+        self.videoBox = QtWidgets.QVBoxLayout(self.videoWidget)
+        self.player = VideoPlayer()
+        self.videoBox.addWidget(self.player)
         self.videoList.currentItemChanged.connect(self.videoPathChanged)
 
 #******************************************************************************
@@ -365,7 +367,9 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
         self.videoPath = self.videoDirectory + "/" + self.selectedVideo.text()
 
-        self.videoWidget.videoPath = self.videoPath
+        self.player.videoPath = self.videoPath
+
+        self.player.openFile()
 
 #******************************************************************************
 
