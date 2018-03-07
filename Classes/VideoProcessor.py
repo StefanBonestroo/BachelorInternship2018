@@ -7,7 +7,7 @@ grabbing frames and for processing those frames using different techniques.
 
 created by: Stefan Bonestroo
 date created: 20/02/2018
-date last modified: 21/02/2018
+date last modified: 07/02/2018
 
 """
 
@@ -43,6 +43,9 @@ class VideoProcessor:
     """
     def frameGrabber(self):
 
+        value = 0
+        increment = 20/5000
+
         # This opens a video capture
         capture = cv2.VideoCapture(self.path)
 
@@ -65,13 +68,17 @@ class VideoProcessor:
 
                 self.grabbedPreviewFrames.append(preview)
 
+                value += increment
+                if value > 20:
+                    yield 20
+                else:
+                    yield value
+
             else:
                 break
 
         # When everything done, release the video capture object
         capture.release()
-
-        self.frameProcessor()
 
 #*******************************************************************************
 
@@ -83,6 +90,11 @@ class VideoProcessor:
 
         # The reference frame will be the previous frame
         referenceFrame = None
+
+        # ProgressBar startingpoint
+        value = 20.0
+
+        increment = 80.0/(len(self.grabbedFrames))
 
         for frame in self.grabbedFrames:
 
@@ -116,5 +128,8 @@ class VideoProcessor:
             preview = QtCore.QByteArray(preview)
 
             self.processedPreviewFrames.append(preview)
+
+            value += increment
+            yield value
 
         self.dimensions = threshold.shape
