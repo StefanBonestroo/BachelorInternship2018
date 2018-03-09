@@ -17,12 +17,14 @@ import threading
 
 import cv2
 from PyQt5 import QtCore, QtGui, QtWidgets, QtMultimedia, QtMultimediaWidgets
+from goprocam import constants
 
 import design
 from Classes.StimulusPlot import StimulusPlotCanvas
 from Classes.VideoProcessor import VideoProcessor
 # from Classes.Controller import DeviceController
 from Classes.VideoPlayer import VideoPlayer
+from Classes.GoProConnector import GoPro
 
 class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
@@ -38,6 +40,9 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
         # Triggers 'setInputDirectory' on the button press
         self.setInputDirectoryButton.clicked.connect(self.setInputDirectory)
         self.videoDirectory = None
+        self.outputDirectory = None
+
+        self.currentFile = None
 
 #******************************************************************************
 
@@ -74,8 +79,6 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
 #******************************************************************************
 
-        self.autoNamingCheckbox.stateChanged.connect(self.autoNamingChange)
-
         self.setOutputDirectoryButton.clicked.connect(self.setOutputDirectory)
 
 #******************************************************************************
@@ -87,7 +90,7 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 #******************************************************************************
 
         self.runButton.clicked.connect(self.runExperiment)
-        self.cancelButton.clicked.connect(self.terminateExperiment)
+        self.resetButton.clicked.connect(self.terminateExperiment)
 
         # self.deviceController = None
         # self.updateController()
@@ -107,27 +110,8 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
 #******************************************************************************
 
-    def setInputDirectory(self):
-
-        """
-        This function lets the user pick a directory and will present all relevant
-        files inside a QListWidget (video files in our case).
-        """
-
-        # The list is cleared
-        self.videoList.clear()
-
-        # A directory picker is opened
-        self.videoDirectory = QtWidgets.QFileDialog.getExistingDirectory(self,"Choose your directory")
-
-        # If a directory has been chosen, iterate over all files en add all videofiles to the list
-        if self.videoDirectory:
-
-            for video in os.listdir(self.videoDirectory):
-
-                if video.endswith(".mov") or video.endswith(".mp4") or video.endswith(".MP4"):
-
-                    self.videoList.addItem(video)
+        self.camera = None
+        self.connectCameraButton.clicked.connect(self.connectCamera)
 
 #******************************************************************************
 
@@ -251,18 +235,6 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
 #******************************************************************************
 
-    def autoNamingChange(self):
-
-        """
-        This function enables/disables custom file names.
-        """
-
-        # The video name text field is read-only if the box is checked, and
-        # will not be used when this is the case
-        self.videoNameText.setReadOnly(self.autoNamingCheckbox.checkState())
-
-#******************************************************************************
-
     def setOutputDirectory(self):
 
         """
@@ -270,9 +242,34 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
         """
 
         # A directory picker is opened
-        directory = QtWidgets.QFileDialog.getExistingDirectory(self,"Choose your directory")
+        self.outputDirectory = QtWidgets.QFileDialog.getExistingDirectory(self,"Choose your directory")
 
-        self.outputDirectoryText.setText(directory)
+        self.outputDirectoryText.setText(self.outputDirectory)
+
+        if self.currentFile != None:
+            self.currentFile.close()
+
+        self.currentFile = open(self.outputDirectory + "/experimentData.txt", "a+")
+
+#******************************************************************************
+
+    def connectCamera(self):
+
+        """
+        This function initiates the camera, and will directly attempt to connect
+        with it over wifi.
+        """
+
+        self.runtimeErrorLabel.setText("Pairing...")
+        time.sleep(0.1)
+        self.camera = GoPro()
+
+        self.camera.cam.locate(constants.start)
+
+        self.runButton.setEnabled(True)
+        self.runtimeErrorLabel.setText("Pairing succesful!")
+
+        self.camera.cam.locate(constants.stop)
 
 #******************************************************************************
 
@@ -283,10 +280,35 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
         stimulusplot is already constructed. This merely controls the little bleep.
         """
 
+        if len(self.conditions) != self.numberSpinBox.value():
+
+            self.runtimeErrorLabel.setText("Error: Not enough conditions.")
+            return
+
+        elif self.currentFile == None:
+
+            self.runtimeErrorLabel.setText("Error: No directory selected.")
+            return
+
+        else:
+
+            if not self.camera.is_alive():
+                self.camera = GoPro()
+
+            self.runtimeErrorLabel.setText("")
+
         self.updateController()
 
         # The last value of the x list will be the total running time
-        self.graph.runningTime = self.graph.x[len(self.graph.x) - 1]
+        runningTime = self.graph.x[len(self.graph.x) - 1]
+
+        self.graph.runningTime = runningTime
+        self.camera.runningTime = runningTime
+
+        self.camera.start()
+
+        # This is the delay between sending the singal and the Go Pro actually recording
+        time.sleep(1.3)
 
         # The connection that this timer has will be executed every 'bleepInterval'
         # milliseconds. This means that 'bleepShower' is triggered every 'bleepInterval' ms
@@ -294,8 +316,9 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
         # This initiates the deviceController thread, so visualizations and the
         # stimulus protocol can be run at the same time
-        self.deviceController.start()
+        # self.deviceController.start()
 
+        self.writeExperimentData()
 
 #******************************************************************************
 
@@ -309,6 +332,30 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
         self.graph.resetStuff()
         self.updateStimulusPlot()
+
+#******************************************************************************
+
+    def setInputDirectory(self):
+
+        """
+        This function lets the user pick a directory and will present all relevant
+        files inside a QListWidget (video files in our case).
+        """
+
+        # The list is cleared
+        self.videoList.clear()
+
+        # A directory picker is opened
+        self.videoDirectory = QtWidgets.QFileDialog.getExistingDirectory(self,"Choose your directory")
+
+        # If a directory has been chosen, iterate over all files en add all videofiles to the list
+        if self.videoDirectory:
+
+            for video in os.listdir(self.videoDirectory):
+
+                if video.endswith(".mov") or video.endswith(".mp4") or video.endswith(".MP4"):
+
+                    self.videoList.addItem(video)
 
 #******************************************************************************
 
@@ -384,9 +431,9 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
         This function updates the values of the stimulusProtocol inside of the controller
         """
 
-        self.deviceController = DeviceController(self.graph.x, self.graph.y, \
-                                                self.conditions, self.graph.runningTime, \
-                                                self.notRandomRadioButton.isChecked())
+        # self.deviceController = DeviceController(self.graph.x, self.graph.y, \
+        #                                         self.conditions, self.graph.runningTime, \
+        #                                         self.notRandomRadioButton.isChecked())
 
 
 #******************************************************************************
@@ -395,3 +442,27 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
         # The media player will return an error string if something went wrong
         self.progressLabel.setText("Error: " + self.videoWidget.mediaPlayer.errorString())
+
+#******************************************************************************
+
+    def writeExperimentData(self):
+
+        if self.currentFile.closed:
+
+            self.currentFile = open(self.outputDirectory + "/experimentData.txt", "a+")
+
+        goProFileName = self.camera.cam.getMediaInfo("file")
+
+        self.currentFile.write("--------------------------------------------------\n")
+        self.currentFile.write("EXPERIMENT DATA - RUN: " + time.asctime() + "\n")
+        self.currentFile.write("--------------------------------------------------\n\n")
+
+        self.currentFile.write("Conditions: " + str(self.conditions) + "\n")
+        self.currentFile.write("Random: " + str((not True)) + "\n")
+
+        self.currentFile.write("GoPro filename: " + goProFileName +"\n")
+        self.currentFile.write("Notes: " + self.notesText.toPlainText() + "\n")
+
+        self.currentFile.write("Copied data into lab journal: NO\n\n\n")
+
+        self.currentFile.close()

@@ -55,7 +55,6 @@ class DeviceController(threading.Thread):
 
 
         self.allOff = np.array([0,0,0,0,0,0,0,0], dtype = np.uint8)
-        self.cameraOn = np.array([0,0,0,0,0,0,0,1], dtype = np.uint8)
 
 #*******************************************************************************
 
@@ -72,13 +71,7 @@ class DeviceController(threading.Thread):
         self.task.StartTask()
 
         self.task.WriteDigitalLines(1, 1, 10.0, DAQmx_Val_GroupByChannel, \
-                                        self.cameraOn, None, None)
-        # time.sleep(2)
-
-        self.task.WriteDigitalLines(1, 1, 10.0, DAQmx_Val_GroupByChannel, \
                                         self.allOff, None, None)
-
-        # time.sleep(13)
 
         # For every on and off state, the loop is run (the last index is not used)
         for y in self.y[:-1]:

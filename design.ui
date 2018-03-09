@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1280</width>
-    <height>800</height>
+    <width>1924</width>
+    <height>687</height>
    </rect>
   </property>
   <property name="cursor">
@@ -496,55 +496,29 @@
         </layout>
        </item>
        <item>
-        <layout class="QVBoxLayout" name="verticalLayout_7">
-         <item>
-          <widget class="Line" name="line_4">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-          </widget>
-         </item>
-         <item alignment="Qt::AlignHCenter">
-          <widget class="QLabel" name="videoNameLabel">
-           <property name="text">
-            <string>Video Output Name</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="videoNameText">
-           <property name="readOnly">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <widget class="QCheckBox" name="autoNamingCheckbox">
-         <property name="text">
-          <string>Auto-naming</string>
+        <widget class="QLabel" name="runtimeErrorLabel">
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+          </font>
          </property>
-         <property name="checked">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="textFormat">
+          <enum>Qt::RichText</enum>
+         </property>
+         <property name="scaledContents">
           <bool>true</bool>
          </property>
         </widget>
        </item>
        <item>
-        <spacer name="verticalSpacer">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
+        <widget class="QPushButton" name="connectCameraButton">
+         <property name="text">
+          <string>Connect Camera</string>
          </property>
-         <property name="sizeType">
-          <enum>QSizePolicy::Expanding</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>30</height>
-          </size>
-         </property>
-        </spacer>
+        </widget>
        </item>
        <item>
         <widget class="QPushButton" name="testStimulusButton">
@@ -713,6 +687,9 @@
          </item>
          <item>
           <widget class="QPushButton" name="runButton">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="minimumSize">
             <size>
              <width>66</width>
@@ -725,9 +702,9 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="cancelButton">
+          <widget class="QPushButton" name="resetButton">
            <property name="text">
-            <string>Cancel</string>
+            <string>Reset</string>
            </property>
           </widget>
          </item>
@@ -773,7 +750,7 @@
   <customwidget>
    <class>VideoPlayer</class>
    <extends>QWidget</extends>
-   <header>Classes/VideoPlayer.py</header>
+   <header>Classes/VideoPlayer</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
