@@ -36,6 +36,7 @@ class Ui_MainWindow(object):
         self.pickAVideoLabel.setObjectName("pickAVideoLabel")
         self.verticalLayout_6.addWidget(self.pickAVideoLabel, 0, QtCore.Qt.AlignHCenter)
         self.videoList = QtWidgets.QListWidget(self.verticalLayoutWidget_2)
+        self.videoList.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
         self.videoList.setObjectName("videoList")
         self.verticalLayout_6.addWidget(self.videoList)
         self.setInputDirectoryButton = QtWidgets.QPushButton(self.verticalLayoutWidget_2)

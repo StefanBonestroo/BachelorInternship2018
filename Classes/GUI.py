@@ -99,20 +99,24 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
 #******************************************************************************
 
+        # This is where the selected video path is stored
         self.videoPath = None
 
+        # The 'VideoPlayer' object is put into the 'videoWidget' widget frame
         self.videoBox = QtWidgets.QVBoxLayout(self.videoWidget)
         self.player = VideoPlayer()
         self.videoBox.addWidget(self.player)
         self.videoList.currentItemChanged.connect(self.videoPathChanged)
+        self.player.mediaPlayer.error.connect(self.handleError)
 
 #******************************************************************************
 
-    """
-    This function lets the user pick a directory and will present all relevant
-    files inside a QListWidget (video files in our case).
-    """
     def setInputDirectory(self):
+
+        """
+        This function lets the user pick a directory and will present all relevant
+        files inside a QListWidget (video files in our case).
+        """
 
         # The list is cleared
         self.videoList.clear()
@@ -125,17 +129,18 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
             for video in os.listdir(self.videoDirectory):
 
-                if video.endswith(".mov") or video.endswith(".mp4"):
+                if video.endswith(".mov") or video.endswith(".mp4") or video.endswith(".MP4"):
 
                     self.videoList.addItem(video)
 
 #******************************************************************************
 
-    """
-    This function will use the info from the spinboxes to construct
-    a stimulus plot to be viewed inside of the canvas.
-    """
     def updateStimulusPlot(self):
+
+        """
+        This function will use the info from the spinboxes to construct
+        a stimulus plot to be viewed inside of the canvas.
+        """
 
         # The spinbox values are obtained
         pre = self.preSpinBox.value()
@@ -188,12 +193,12 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
 #******************************************************************************
 
-    """
-    This function populates the stimulus protocol list with conditions entered by
-    the user. A condition is a condition name and a output channel number.
-    """
-
     def addToProtocol(self):
+
+        """
+        This function populates the stimulus protocol list with conditions entered by
+        the user. A condition is a condition name and a output channel number.
+        """
 
         channel = str(self.channelSpinBox.value())
         condition = self.conditionName.text()
@@ -220,11 +225,11 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
 #******************************************************************************
 
-    """
-    This function enables the user to test out a stimulus.
-    """
-
     def testStimulus(self):
+
+        """
+        This function enables the user to test out a stimulus.
+        """
 
         if len(self.conditions) is not 0:
 
@@ -234,27 +239,27 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
 #******************************************************************************
 
-    """
-    This function clears the stimulus protocol list.
-    """
-
     def clearProtocol(self):
 
-            self.stimulusProtocolList.clear()
+        """
+        This function clears the stimulus protocol list.
+        """
 
-            self.channelsTaken = []
-            self.conditions = []
+        self.stimulusProtocolList.clear()
 
-            self.graph.conditionLabels = []
-            self.updateStimulusPlot()
+        self.channelsTaken = []
+        self.conditions = []
+
+        self.graph.conditionLabels = []
+        self.updateStimulusPlot()
 
 #******************************************************************************
 
-    """
-    This function enables/disables custom file names.
-    """
-
     def autoNamingChange(self):
+
+        """
+        This function enables/disables custom file names.
+        """
 
         # The video name text field is read-only if the box is checked, and
         # will not be used when this is the case
@@ -262,10 +267,11 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
 #******************************************************************************
 
-    """
-    This function changes the path where the output will be saved in.
-    """
     def setOutputDirectory(self):
+
+        """
+        This function changes the path where the output will be saved in.
+        """
 
         # A directory picker is opened
         directory = QtWidgets.QFileDialog.getExistingDirectory(self,"Choose your directory")
@@ -274,11 +280,12 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
 #******************************************************************************
 
-    """
-    This function will run 'plotStimulus' under different conditions, since the
-    stimulusplot is already constructed. This merely controls the little bleep.
-    """
     def runExperiment(self):
+
+        """
+        This function will run 'plotStimulus' under different conditions, since the
+        stimulusplot is already constructed. This merely controls the little bleep.
+        """
 
         self.updateController()
 
@@ -296,10 +303,11 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
 #******************************************************************************
 
-    """
-    This function will terminate an experiment run.
-    """
     def terminateExperiment(self):
+
+        """
+        This function will terminate an experiment run.
+        """
 
         self.bleepTimer.stop()
 
@@ -308,11 +316,12 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
 #******************************************************************************
 
-    """
-    This function runs the analysis of the selected video material when 'Run Analysis'
-    is pressed.
-    """
     def runAnalysis(self):
+
+        """
+        This function runs the analysis of the selected video material when 'Run Analysis'
+        is pressed.
+        """
 
         text = "Preparing frame grabber..."
         self.progressLabel.setText(text)
@@ -354,11 +363,12 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.progressLabel.setText(text)
 
 #******************************************************************************
-    """
-    This function updates the video input path
-    """
 
     def videoPathChanged(self):
+
+        """
+        This function updates the video input path
+        """
 
         self.selectedVideo = self.videoList.currentItem()
 
@@ -368,15 +378,15 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.videoPath = self.videoDirectory + "/" + self.selectedVideo.text()
 
         self.player.videoPath = self.videoPath
-
         self.player.openFile()
 
 #******************************************************************************
 
-    """
-    This function updates the values of the stimulusProtocol inside of the controller
-    """
     def updateController(self):
+
+        """
+        This function updates the values of the stimulusProtocol inside of the controller
+        """
 
         self.deviceController = DeviceController(self.graph.x, self.graph.y, \
                                                 self.conditions, self.graph.runningTime, \
@@ -384,3 +394,8 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
 
 #******************************************************************************
+
+    def handleError(self):
+
+        # The media player will return an error string if something went wrong
+        self.progressLabel.setText("Error: " + self.player.mediaPlayer.errorString())

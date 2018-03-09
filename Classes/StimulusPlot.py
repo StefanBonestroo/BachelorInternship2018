@@ -68,11 +68,11 @@ class StimulusPlotCanvas(FigureCanvas):
 
 #*******************************************************************************
 
-    """
-    This function handles the plotting and other visual aspects of the plot
-    """
-
     def plotStimulus(self):
+
+        """
+        This function handles the plotting and other visual aspects of the plot
+        """
 
         # The axes should be cleared everytime this is run
         self.axes.cla()
@@ -90,11 +90,12 @@ class StimulusPlotCanvas(FigureCanvas):
 
 #*******************************************************************************
 
-    """
-    Re-plots the plot every 'bleepInterval' ms to update the location of the bleep,
-    so that the user can see the course of the experiment.
-    """
     def bleepShower(self):
+
+        """
+        Re-plots the plot every 'bleepInterval' ms to update the location of the bleep,
+        so that the user can see the course of the experiment.
+        """
 
         # When we have reached our total running time the triggering of this function
         # should cease, and all values concerning the run should be reset
@@ -124,11 +125,13 @@ class StimulusPlotCanvas(FigureCanvas):
         self.intervalsPassed += 1
 
 #*******************************************************************************
-    """
-    This function places the labels above the stimuli and will change the color of
-    the label of the active stimulus.
-    """
+
     def placeLabels(self):
+
+        """
+        This function places the labels above the stimuli and will change the color of
+        the label of the active stimulus.
+        """
 
         # Every uneven index number is stimulus activation point
         stimPoint = 1
@@ -155,10 +158,11 @@ class StimulusPlotCanvas(FigureCanvas):
 
 #*******************************************************************************
 
-    """
-    This function resets a bunch of values concerning the running of an experiment.
-    """
     def resetStuff(self):
+
+        """
+        This function resets a bunch of values concerning the running of an experiment.
+        """
 
         self.xBleep = 0
         self.yBleep = 0
