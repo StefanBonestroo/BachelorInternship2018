@@ -102,12 +102,8 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
         # This is where the selected video path is stored
         self.videoPath = None
 
-        # The 'VideoPlayer' object is put into the 'videoWidget' widget frame
-        self.videoBox = QtWidgets.QVBoxLayout(self.videoWidget)
-        self.player = VideoPlayer()
-        self.videoBox.addWidget(self.player)
         self.videoList.currentItemChanged.connect(self.videoPathChanged)
-        self.player.mediaPlayer.error.connect(self.handleError)
+        self.videoWidget.mediaPlayer.error.connect(self.handleError)
 
 #******************************************************************************
 
@@ -377,8 +373,8 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
         self.videoPath = self.videoDirectory + "/" + self.selectedVideo.text()
 
-        self.player.videoPath = self.videoPath
-        self.player.openFile()
+        self.videoWidget.videoPath = self.videoPath
+        self.videoWidget.openFile()
 
 #******************************************************************************
 
@@ -398,4 +394,4 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
     def handleError(self):
 
         # The media player will return an error string if something went wrong
-        self.progressLabel.setText("Error: " + self.player.mediaPlayer.errorString())
+        self.progressLabel.setText("Error: " + self.videoWidget.mediaPlayer.errorString())
