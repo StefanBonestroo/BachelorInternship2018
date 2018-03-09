@@ -21,7 +21,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets, QtMultimedia, QtMultimediaWidgets
 import design
 from Classes.StimulusPlot import StimulusPlotCanvas
 from Classes.VideoProcessor import VideoProcessor
-from Classes.Controller import DeviceController
+# from Classes.Controller import DeviceController
 from Classes.VideoPlayer import VideoPlayer
 
 class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
@@ -88,7 +88,7 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.runButton.clicked.connect(self.runExperiment)
         self.cancelButton.clicked.connect(self.terminateExperiment)
 
-        self.deviceController = None
+        # self.deviceController = None
         # self.updateController()
 
 #******************************************************************************
