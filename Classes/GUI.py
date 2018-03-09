@@ -89,8 +89,8 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.runButton.clicked.connect(self.runExperiment)
         self.cancelButton.clicked.connect(self.terminateExperiment)
 
-        # self.deviceController = None
-        # self.updateController()
+        self.deviceController = None
+        self.updateController()
 
 #******************************************************************************
 
