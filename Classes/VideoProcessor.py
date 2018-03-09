@@ -37,11 +37,12 @@ class VideoProcessor:
 
 #*******************************************************************************
 
-    """
-    This function grabs every single frame of a video at a certain path, and
-    stores these in an array.
-    """
     def frameGrabber(self):
+
+        """
+        This function grabs every single frame of a video at a certain path, and
+        stores these in an array.
+        """
 
         value = 0
         increment = 20/5000
@@ -82,11 +83,12 @@ class VideoProcessor:
 
 #*******************************************************************************
 
-    """
-    This function processes the grabbed frames in 'self.grabbedFrames' using
-    different techniques.
-    """
     def frameProcessor(self):
+
+        """
+        This function processes the grabbed frames in 'self.grabbedFrames' using
+        different techniques.
+        """
 
         # The reference frame will be the previous frame
         referenceFrame = None

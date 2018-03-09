@@ -54,12 +54,12 @@ date last modified: 07-03-2017
 
 import time
 
-from PyQt5.QtCore import QDir, Qt, QUrl, QRect
+from PyQt5.QtCore import QDir, Qt, QUrl, QRect, QSize
 import PyQt5.QtGui
 from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
 from PyQt5.QtMultimediaWidgets import QVideoWidget
 from PyQt5.QtWidgets import (QApplication, QFileDialog, QHBoxLayout, QLabel,
-        QPushButton, QSizePolicy, QSlider, QStyle, QVBoxLayout, QWidget, QSpacerItem)
+        QPushButton, QSizePolicy, QSlider, QStyle, QVBoxLayout, QLayout, QWidget, QSpacerItem)
 
 class VideoPlayer(QWidget):
 
@@ -68,19 +68,36 @@ class VideoPlayer(QWidget):
         super(VideoPlayer, self).__init__(parent)
 
         self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
+        self.mediaPlayer.setMuted(True)
 
+#*******************************************************************************
+
+        # The media player projects the media onto the videoWidget
         self.videoWidget = QVideoWidget()
-        self.videoWidget.setMinimumSize(501,281)
+        self.videoWidget.setAspectRatioMode(Qt.IgnoreAspectRatio)
 
+        # This useless size thing makes sure that the video aspect fits the window
+        self.videoWidget.setFixedSize(501, 281)
+
+#*******************************************************************************
+
+        # When play is pressed, 'play' is run, and the icon changes according to
+        # its state
         self.playButton = QPushButton()
         self.playButton.setEnabled(False)
         self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
         self.playButton.clicked.connect(self.play)
 
+#*******************************************************************************
+
+        # This is a movable Qslider
         self.positionSlider = QSlider(Qt.Horizontal)
         self.positionSlider.setRange(0, 0)
         self.positionSlider.sliderMoved.connect(self.setPosition)
 
+#*******************************************************************************
+
+        # The widgets are thrown together in a layout
         controlLayout = QHBoxLayout()
         controlLayout.setContentsMargins(0,0,0,0)
         controlLayout.addWidget(self.playButton)
@@ -91,17 +108,19 @@ class VideoPlayer(QWidget):
 
         superLayout.addWidget(self.videoWidget)
         superLayout.addLayout(controlLayout)
-
-
         self.setLayout(superLayout)
+
+#*******************************************************************************
 
         self.mediaPlayer.setVideoOutput(self.videoWidget)
         self.mediaPlayer.stateChanged.connect(self.mediaStateChanged)
         self.mediaPlayer.positionChanged.connect(self.positionChanged)
         self.mediaPlayer.durationChanged.connect(self.durationChanged)
-        self.mediaPlayer.error.connect(self.handleError)
 
+        # This is where the selected video location is stored
         self.videoPath = None
+
+#*******************************************************************************
 
     def openFile(self):
 
@@ -109,25 +128,32 @@ class VideoPlayer(QWidget):
 
             content = QMediaContent(QUrl.fromLocalFile(self.videoPath))
 
-            self.mediaPlayer.setMedia(content)
             self.playButton.setEnabled(True)
+
+            self.mediaPlayer.setMedia(content)
+
+#*******************************************************************************
 
     def play(self):
 
         if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
+
             self.mediaPlayer.pause()
+            self.videoWidget.setFixedSize(499,281)
         else:
             self.mediaPlayer.play()
-            self.videoWidget.setAspectRatioMode(Qt.KeepAspectRatio)
             self.videoWidget.setFixedSize(500, 281)
+
+#*******************************************************************************
 
     def mediaStateChanged(self, state):
 
         if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
+            self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
+        else:
             self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
 
-        else:
-            self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
+#*******************************************************************************
 
     def positionChanged(self, position):
         self.positionSlider.setValue(position)
@@ -137,8 +163,3 @@ class VideoPlayer(QWidget):
 
     def setPosition(self, position):
         self.mediaPlayer.setPosition(position)
-
-    def handleError(self):
-
-        self.playButton.setEnabled(False)
-        self.errorLabel.setText("Error: " + self.mediaPlayer.errorString())
