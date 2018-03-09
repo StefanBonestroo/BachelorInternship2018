@@ -280,13 +280,17 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
         # The last value of the x list will be the total running time
         self.graph.runningTime = self.graph.x[len(self.graph.x) - 1]
 
+        # This initiates the deviceController thread, so visualizations and the
+        # stimulus protocol can be run at the same time
+        self.deviceController.start()
+
+        time.sleep(15)
+
         # The connection that this timer has will be executed every 'bleepInterval'
         # milliseconds. This means that 'bleepShower' is triggered every 'bleepInterval' ms
         self.bleepTimer.start(self.graph.bleepInterval)
 
-        # This initiates the deviceController thread, so visualizations and the
-        # stimulus protocol can be run at the same time
-        self.deviceController.start()
+
 
 
 #******************************************************************************

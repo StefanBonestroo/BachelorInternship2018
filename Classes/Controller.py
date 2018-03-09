@@ -53,6 +53,7 @@ class DeviceController(threading.Thread):
                                                         dtype = np.uint8)
 
             self.allOff = np.array([0,0,0,0,0,0,0,0], dtype = np.uint8)
+            self.cameraOn = np.array([0,0,0,0,0,0,0,1], dtype = np.uint8)
             self.counter += 1
 
 #*******************************************************************************
@@ -62,11 +63,22 @@ class DeviceController(threading.Thread):
     """
     def run(self):
 
+
+
         self.counter = 0
         currentCondition = 0
 
         # The hardware can now start to receive signals
-        task.StartTask()
+        self.task.StartTask()
+
+        self.task.WriteDigitalLines(1, 1, 10.0, DAQmx_Val_GroupByChannel, \
+                                        self.cameraOn, None, None)
+        time.sleep(2)
+
+        self.task.WriteDigitalLines(1, 1, 10.0, DAQmx_Val_GroupByChannel, \
+                                        self.allOff, None, None)
+
+        time.sleep(13)
 
         # For every on and off state, the loop is run (the last index is not used)
         for y in self.y[:-1]:
@@ -74,15 +86,16 @@ class DeviceController(threading.Thread):
             # If it needs to be on, activate the channels to fit the next condition
             if y == 1:
 
-                channelActivity = self.channels[currentCondition]
-                task.WriteDigitalLines(1, 1, 10.0, DAQmx_Val_GroupByChannel, \
+                channelActivity = self.triggerTree[self.conditions[currentCondition]]
+                self.task.WriteDigitalLines(1, 1, 10.0, DAQmx_Val_GroupByChannel, \
                                                 channelActivity, None, None)
+                self.conditions[currentCondition]
                 currentCondition += 1
 
             # Else set to the default channel
             else:
-                task.WriteDigitalLines(1, 1, 10.0, DAQmx_Val_GroupByChannel, \
-                                                allOff, None, None)
+                self.task.WriteDigitalLines(1, 1, 10.0, DAQmx_Val_GroupByChannel, \
+                                                self.allOff, None, None)
 
             # Wait for an interval amount of seconds (as given by the user in the
             # stimulus protocol)
@@ -90,5 +103,5 @@ class DeviceController(threading.Thread):
             self.counter += 1
 
         # Return to default state and stop the task
-        task.WriteDigitalLines(1, 1, 10.0, DAQmx_Val_GroupByChannel, allOff, None, None)
-        task.StopTask()
+        self.task.WriteDigitalLines(1, 1, 10.0, DAQmx_Val_GroupByChannel, self.allOff, None, None)
+        self.task.StopTask()
