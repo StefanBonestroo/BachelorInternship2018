@@ -47,7 +47,7 @@ class Ui_MainWindow(object):
         self.videoPreviewFrame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.videoPreviewFrame.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.videoPreviewFrame.setObjectName("videoPreviewFrame")
-        self.videoWidget = QtWidgets.QWidget(self.videoPreviewFrame)
+        self.videoWidget = VideoPlayer(self.videoPreviewFrame)
         self.videoWidget.setGeometry(QtCore.QRect(10, 10, 500, 381))
         self.videoWidget.setMaximumSize(QtCore.QSize(500, 381))
         self.videoWidget.setObjectName("videoWidget")
@@ -108,6 +108,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_14 = QtWidgets.QVBoxLayout()
         self.verticalLayout_14.setObjectName("verticalLayout_14")
         self.progressLabel = QtWidgets.QLabel(self.layoutWidget)
+        self.progressLabel.setText("")
         self.progressLabel.setObjectName("progressLabel")
         self.verticalLayout_14.addWidget(self.progressLabel, 0, QtCore.Qt.AlignHCenter)
         self.progressBar = QtWidgets.QProgressBar(self.layoutWidget)
@@ -365,7 +366,6 @@ class Ui_MainWindow(object):
         self.checkBox.setText(_translate("MainWindow", "CheckBox"))
         self.runAnalysisButton.setText(_translate("MainWindow", "Run Analysis"))
         self.updateFrequencyPlotButton.setText(_translate("MainWindow", "Update Plots"))
-        self.progressLabel.setText(_translate("MainWindow", " "))
         self.stimulusTitle.setText(_translate("MainWindow", "Stimulus"))
         self.preStimulusLabel.setText(_translate("MainWindow", "Pre stimulus (s)"))
         self.stimulusLabel.setText(_translate("MainWindow", "Stimulus (s)"))
@@ -386,3 +386,4 @@ class Ui_MainWindow(object):
         self.runButton.setText(_translate("MainWindow", "Run"))
         self.cancelButton.setText(_translate("MainWindow", "Cancel"))
 
+from Classes.VideoPlayer import VideoPlayer

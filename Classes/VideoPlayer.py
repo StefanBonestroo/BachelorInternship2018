@@ -74,10 +74,7 @@ class VideoPlayer(QWidget):
 
         # The media player projects the media onto the videoWidget
         self.videoWidget = QVideoWidget()
-        self.videoWidget.setAspectRatioMode(Qt.IgnoreAspectRatio)
-
-        # This useless size thing makes sure that the video aspect fits the window
-        self.videoWidget.setFixedSize(501, 281)
+        self.videoWidget.setFixedSize(500,330)
 
 #*******************************************************************************
 
@@ -137,13 +134,9 @@ class VideoPlayer(QWidget):
     def play(self):
 
         if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
-
             self.mediaPlayer.pause()
-            self.videoWidget.setFixedSize(499,281)
         else:
             self.mediaPlayer.play()
-            self.videoWidget.setFixedSize(500, 281)
-
 #*******************************************************************************
 
     def mediaStateChanged(self, state):

@@ -17,7 +17,7 @@ import threading
 import numpy as np
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-# from PyDAQmx import *
+from PyDAQmx import *
 
 class DeviceController(threading.Thread):
 
@@ -51,10 +51,11 @@ class DeviceController(threading.Thread):
         for condition in conditions:
             self.triggerTree["{0}".format(condition)] = np.array(self.channels[self.counter],\
                                                         dtype = np.uint8)
-
-            self.allOff = np.array([0,0,0,0,0,0,0,0], dtype = np.uint8)
-            self.cameraOn = np.array([0,0,0,0,0,0,0,1], dtype = np.uint8)
             self.counter += 1
+
+
+        self.allOff = np.array([0,0,0,0,0,0,0,0], dtype = np.uint8)
+        self.cameraOn = np.array([0,0,0,0,0,0,0,1], dtype = np.uint8)
 
 #*******************************************************************************
 
@@ -72,12 +73,12 @@ class DeviceController(threading.Thread):
 
         self.task.WriteDigitalLines(1, 1, 10.0, DAQmx_Val_GroupByChannel, \
                                         self.cameraOn, None, None)
-        time.sleep(2)
+        # time.sleep(2)
 
         self.task.WriteDigitalLines(1, 1, 10.0, DAQmx_Val_GroupByChannel, \
                                         self.allOff, None, None)
 
-        time.sleep(13)
+        # time.sleep(13)
 
         # For every on and off state, the loop is run (the last index is not used)
         for y in self.y[:-1]:

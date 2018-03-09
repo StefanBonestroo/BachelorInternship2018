@@ -75,7 +75,6 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 #******************************************************************************
 
         self.autoNamingCheckbox.stateChanged.connect(self.autoNamingChange)
-
         self.setOutputDirectoryButton.clicked.connect(self.setOutputDirectory)
 
 #******************************************************************************
@@ -90,7 +89,7 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.cancelButton.clicked.connect(self.terminateExperiment)
 
         self.deviceController = None
-        self.updateController()
+        # self.updateController()
 
 #******************************************************************************
 
@@ -102,12 +101,8 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
         # This is where the selected video path is stored
         self.videoPath = None
 
-        # The 'VideoPlayer' object is put into the 'videoWidget' widget frame
-        self.videoBox = QtWidgets.QVBoxLayout(self.videoWidget)
-        self.player = VideoPlayer()
-        self.videoBox.addWidget(self.player)
         self.videoList.currentItemChanged.connect(self.videoPathChanged)
-        self.player.mediaPlayer.error.connect(self.handleError)
+        self.videoWidget.mediaPlayer.error.connect(self.handleError)
 
 #******************************************************************************
 
@@ -287,23 +282,25 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
         stimulusplot is already constructed. This merely controls the little bleep.
         """
 
-        self.updateController()
+        # self.updateController()
 
         # The last value of the x list will be the total running time
         self.graph.runningTime = self.graph.x[len(self.graph.x) - 1]
 
         # This initiates the deviceController thread, so visualizations and the
         # stimulus protocol can be run at the same time
-        self.deviceController.start()
+        # self.deviceController.start()
 
-        time.sleep(15)
+        # time.sleep(15)
 
         # The connection that this timer has will be executed every 'bleepInterval'
         # milliseconds. This means that 'bleepShower' is triggered every 'bleepInterval' ms
         self.bleepTimer.start(self.graph.bleepInterval)
 
+        time.sleep(self.graph.runningTime)
 
-
+        print("done")
+        self.terminateExperiment()
 
 #******************************************************************************
 
@@ -314,6 +311,7 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
         """
 
         self.bleepTimer.stop()
+        # self.deviceController.join()
 
         self.graph.resetStuff()
         self.updateStimulusPlot()
@@ -381,8 +379,8 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
         self.videoPath = self.videoDirectory + "/" + self.selectedVideo.text()
 
-        self.player.videoPath = self.videoPath
-        self.player.openFile()
+        self.videoWidget.videoPath = self.videoPath
+        self.videoWidget.openFile()
 
 #******************************************************************************
 
@@ -402,4 +400,4 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
     def handleError(self):
 
         # The media player will return an error string if something went wrong
-        self.progressLabel.setText("Error: " + self.player.mediaPlayer.errorString())
+        self.progressLabel.setText("Error: " + self.videoWidget.mediaPlayer.errorString())

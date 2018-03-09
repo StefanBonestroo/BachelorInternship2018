@@ -105,7 +105,7 @@
      <property name="frameShadow">
       <enum>QFrame::Sunken</enum>
      </property>
-     <widget class="QWidget" name="videoWidget" native="true">
+     <widget class="VideoPlayer" name="videoWidget" native="true">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -238,7 +238,7 @@
          <item alignment="Qt::AlignHCenter">
           <widget class="QLabel" name="progressLabel">
            <property name="text">
-            <string> </string>
+            <string/>
            </property>
           </widget>
          </item>
@@ -769,6 +769,14 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>VideoPlayer</class>
+   <extends>QWidget</extends>
+   <header>Classes/VideoPlayer.py</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
