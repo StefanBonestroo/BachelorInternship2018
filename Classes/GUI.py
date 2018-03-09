@@ -6,7 +6,7 @@ interactions a user can have with it.
 
 created by: Stefan Bonestroo
 date created: 08/02/2018
-date last modified: 28/02/2018
+date last modified: 07/02/2018
 """
 
 import os
@@ -16,12 +16,13 @@ import time
 import threading
 
 import cv2
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtGui, QtWidgets, QtMultimedia, QtMultimediaWidgets
 
 import design
 from Classes.StimulusPlot import StimulusPlotCanvas
 from Classes.VideoProcessor import VideoProcessor
 from Classes.Controller import DeviceController
+from Classes.VideoPlayer import VideoPlayer
 
 class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
@@ -88,8 +89,8 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.runButton.clicked.connect(self.runExperiment)
         self.cancelButton.clicked.connect(self.terminateExperiment)
 
-        self.deviceController = None
-        self.updateController()
+        # self.deviceController = None
+        # self.updateController()
 
 #******************************************************************************
 
@@ -98,7 +99,12 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
 #******************************************************************************
 
-        self.playVideoButton.clicked.connect(self.playPreviewVideo)
+        self.videoPath = None
+
+        self.videoBox = QtWidgets.QVBoxLayout(self.videoWidget)
+        self.player = VideoPlayer()
+        self.videoBox.addWidget(self.player)
+        self.videoList.currentItemChanged.connect(self.videoPathChanged)
 
 #******************************************************************************
 
@@ -190,7 +196,6 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
     def addToProtocol(self):
 
         channel = str(self.channelSpinBox.value())
-
         condition = self.conditionName.text()
 
         item = channel + "    - " + condition
@@ -313,60 +318,62 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
     """
     def runAnalysis(self):
 
+        text = "Preparing frame grabber..."
+        self.progressLabel.setText(text)
         self.progressBar.setValue(0)
+        QtWidgets.QApplication.processEvents()
 
-        selectedVideo = self.videoList.currentItem()
+        # A videoProcessor object is created and the frameGrabber function inside
+        # of it will grab every single frame of a video and append its RGB values to an array
+        self.processor = VideoProcessor(self.videoPath)
 
-        if not selectedVideo:
-            print("No video was selected")
+        grabbingProgress = self.processor.frameGrabber()
+
+        for value in grabbingProgress:
+            self.progressBar.setValue(int(value))
+            QtWidgets.QApplication.processEvents()
+
+        text = "Done grabbing frames"
+        self.progressLabel.setText(text)
+        self.progressBar.setValue(20)
+        QtWidgets.QApplication.processEvents()
+
+        time.sleep(2)
+
+        text = "Processing frames..."
+        self.progressLabel.setText(text)
+        QtWidgets.QApplication.processEvents()
+
+        processProgress = self.processor.frameProcessor()
+
+        for value in processProgress:
+            self.progressBar.setValue(int(value))
+            QtWidgets.QApplication.processEvents()
+
+
+        self.progressBar.setValue(100)
+
+        text = "Done processing the " + str(len(self.processor.grabbedFrames)) + \
+        " frames of " + self.selectedVideo.text()
+        self.progressLabel.setText(text)
+
+#******************************************************************************
+    """
+    This function updates the video input path
+    """
+
+    def videoPathChanged(self):
+
+        self.selectedVideo = self.videoList.currentItem()
 
         # Makes the file/folder names readable by making spaces readable
         self.videoDirectory = self.videoDirectory.replace(' ', '\ ')
 
-        path = self.videoDirectory + "/" + selectedVideo.text()
+        self.videoPath = self.videoDirectory + "/" + self.selectedVideo.text()
 
-        # A videoProcessor object is created and the frameGrabber function inside
-        # of it will grab every single frame of a video and append its RGB values to an array
-        self.processor = VideoProcessor(path)
-        self.processor.frameGrabber()
+        self.player.videoPath = self.videoPath
 
-        self.progressBar.setValue(50)
-
-        # Smooth progressBar increments
-        increment = float(50/len(processor.processedFrames))
-        total = 50.0
-
-        # Every frame is shown after processing
-        for frame in self.processor.processedFrames:
-
-            cv2.imshow("frame",frame)
-            cv2.waitKey(2)
-
-            self.progressBar.setValue(total)
-
-            total += increment
-
-        self.progressBar.setValue(100)
-
-        # Closes all the frames
-        cv2.destroyAllWindows()
-        print("done")
-
-#******************************************************************************
-    """
-    This function plays a preview video.
-    """
-    def playPreviewVideo(self):
-
-        for frame in self.processor.grabbedFrames:
-
-            framePictured = QtGui.QPixmap()
-            framePictured.loadFromData(frame)
-
-            self.videoPreviewLabel.setPixmap(framePictured)
-
-            # 30 frames per 1000 ms (30fps)
-            cv2.waitKey(int(1000/30))
+        self.player.openFile()
 
 #******************************************************************************
 
