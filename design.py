@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1924, 687)
+        MainWindow.resize(1652, 687)
         MainWindow.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
@@ -240,6 +240,9 @@ class Ui_MainWindow(object):
         self.connectCameraButton = QtWidgets.QPushButton(self.verticalLayoutWidget_3)
         self.connectCameraButton.setObjectName("connectCameraButton")
         self.verticalLayout_12.addWidget(self.connectCameraButton)
+        self.downloadLastDataButton = QtWidgets.QPushButton(self.verticalLayoutWidget_3)
+        self.downloadLastDataButton.setObjectName("downloadLastDataButton")
+        self.verticalLayout_12.addWidget(self.downloadLastDataButton)
         self.testStimulusButton = QtWidgets.QPushButton(self.verticalLayoutWidget_3)
         self.testStimulusButton.setObjectName("testStimulusButton")
         self.verticalLayout_12.addWidget(self.testStimulusButton)
@@ -367,6 +370,7 @@ class Ui_MainWindow(object):
         self.notRandomRadioButton.setText(_translate("MainWindow", "Fixed order"))
         self.randomRadioButton.setText(_translate("MainWindow", "Random order"))
         self.connectCameraButton.setText(_translate("MainWindow", "Connect Camera"))
+        self.downloadLastDataButton.setText(_translate("MainWindow", "Download/Save Data"))
         self.testStimulusButton.setText(_translate("MainWindow", "Test Stimulus"))
         self.protocolLabel.setText(_translate("MainWindow", "Protocol"))
         self.stimulusProtocolList.setSortingEnabled(True)

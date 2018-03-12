@@ -9,14 +9,10 @@ date created: 24/02/2018
 date last modified: 07/02/2018
 """
 
-import os
-import sys
-import random
 import time
 import threading
 import numpy as np
 
-from PyQt5 import QtCore, QtGui, QtWidgets
 from PyDAQmx import *
 
 class DeviceController(threading.Thread):

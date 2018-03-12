@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1924</width>
+    <width>1652</width>
     <height>687</height>
    </rect>
   </property>
@@ -517,6 +517,13 @@
         <widget class="QPushButton" name="connectCameraButton">
          <property name="text">
           <string>Connect Camera</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="downloadLastDataButton">
+         <property name="text">
+          <string>Download/Save Data</string>
          </property>
         </widget>
        </item>

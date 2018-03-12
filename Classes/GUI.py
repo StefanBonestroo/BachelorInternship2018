@@ -6,7 +6,7 @@ interactions a user can have with it.
 
 created by: Stefan Bonestroo
 date created: 08/02/2018
-date last modified: 07/02/2018
+date last modified: 12/03/2018
 """
 
 import os
@@ -76,6 +76,7 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.clearProtocolButton.clicked.connect(self.clearProtocol)
 
         self.testStimulusButton.clicked.connect(self.testStimulus)
+        self.downloadLastDataButton.clicked.connect(self.downloadData)
 
 #******************************************************************************
 
@@ -246,10 +247,44 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
         self.outputDirectoryText.setText(self.outputDirectory)
 
+        # When the experiment data output directory is selected, the path will be
+        # set to this location
         if self.currentFile != None:
             self.currentFile.close()
 
         self.currentFile = open(self.outputDirectory + "/experimentData.txt", "a+")
+
+#******************************************************************************
+
+    def downloadData(self):
+
+        """
+        This function downloads the most recently shot media.
+        """
+        
+        if self.currentFile == None:
+
+            self.runtimeErrorLabel.setText("No directory was selected.")
+            return
+
+        elif self.camera == None:
+
+            self.runtimeErrorLabel.setText("Not connected to a GoPro.")
+            return
+
+        self.runtimeErrorLabel.setText("Downloading...")
+        time.sleep(0.1)
+
+        # This is stored in the folder where 'main.py' is
+        self.camera.cam.downloadLastMedia()
+
+        # The most recent shot video's name is obtained
+        name = self.camera.cam.getMedia()
+        self.writeExperimentData(name[-12:-4])
+
+        # Only then the next run can be done, since the experiment data will be overwritten
+        self.runButton.setEnabled(True)
+        self.runtimeErrorLabel.setText("Download succesful!")
 
 #******************************************************************************
 
@@ -264,11 +299,13 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
         time.sleep(0.1)
         self.camera = GoPro()
 
+        # This makes the camera do 'beep'
         self.camera.cam.locate(constants.start)
 
         self.runButton.setEnabled(True)
         self.runtimeErrorLabel.setText("Pairing succesful!")
 
+        # This makes the camera stop doing 'beep'
         self.camera.cam.locate(constants.stop)
 
 #******************************************************************************
@@ -280,16 +317,19 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
         stimulusplot is already constructed. This merely controls the little bleep.
         """
 
+        # Only if the conditions have all been given a name, the experiment can be run
         if len(self.conditions) != self.numberSpinBox.value():
 
             self.runtimeErrorLabel.setText("Error: Not enough conditions.")
             return
 
+        # A output directory should be selected
         elif self.currentFile == None:
 
             self.runtimeErrorLabel.setText("Error: No directory selected.")
             return
 
+        # If the camera-thread has ended, make a new one.
         else:
 
             if not self.camera.is_alive():
@@ -307,7 +347,7 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
         self.camera.start()
 
-        # This is the delay between sending the singal and the Go Pro actually recording
+        # This is the delay between sending the signal and the Go Pro actually recording
         time.sleep(1.3)
 
         # The connection that this timer has will be executed every 'bleepInterval'
@@ -318,7 +358,8 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
         # stimulus protocol can be run at the same time
         # self.deviceController.start()
 
-        self.writeExperimentData()
+        self.runButton.setEnabled(False)
+        self.runtimeErrorLabel.setText("Please, download/save your experiment data.")
 
 #******************************************************************************
 
@@ -332,6 +373,9 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
         self.graph.resetStuff()
         self.updateStimulusPlot()
+
+        self.runButton.setEnabled(True)
+        self.progressLabel.setText("")
 
 #******************************************************************************
 
@@ -435,7 +479,6 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
         #                                         self.conditions, self.graph.runningTime, \
         #                                         self.notRandomRadioButton.isChecked())
 
-
 #******************************************************************************
 
     def handleError(self):
@@ -445,13 +488,16 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
 #******************************************************************************
 
-    def writeExperimentData(self):
+    def writeExperimentData(self, videoFileName):
+
+        """
+        This function writes to a .txt file, the information concerning the previously
+        run experiment.
+        """
 
         if self.currentFile.closed:
 
             self.currentFile = open(self.outputDirectory + "/experimentData.txt", "a+")
-
-        goProFileName = self.camera.cam.getMediaInfo("file")
 
         self.currentFile.write("--------------------------------------------------\n")
         self.currentFile.write("EXPERIMENT DATA - RUN: " + time.asctime() + "\n")
@@ -460,7 +506,7 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.currentFile.write("Conditions: " + str(self.conditions) + "\n")
         self.currentFile.write("Random: " + str((not True)) + "\n")
 
-        self.currentFile.write("GoPro filename: " + goProFileName +"\n")
+        self.currentFile.write("GoPro filename: " + videoFileName +"\n")
         self.currentFile.write("Notes: " + self.notesText.toPlainText() + "\n")
 
         self.currentFile.write("Copied data into lab journal: NO\n\n\n")
