@@ -21,8 +21,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets, QtMultimedia, QtMultimediaWidgets
 import design
 from Classes.StimulusPlot import StimulusPlotCanvas
 from Classes.VideoProcessor import VideoProcessor
-# from Classes.Controller import DeviceController
-from Classes.VideoPlayer import VideoPlayer
+from Classes.Controller import DeviceController
+# from Classes.VideoPlayer import VideoPlayer
 
 class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
@@ -89,8 +89,8 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.runButton.clicked.connect(self.runExperiment)
         self.cancelButton.clicked.connect(self.terminateExperiment)
 
-        # self.deviceController = None
-        # self.updateController()
+        self.deviceController = None
+        self.updateController()
 
 #******************************************************************************
 
@@ -103,7 +103,7 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.videoPath = None
 
         self.videoList.currentItemChanged.connect(self.videoPathChanged)
-        self.videoWidget.mediaPlayer.error.connect(self.handleError)
+        # self.videoWidget.mediaPlayer.error.connect(self.handleError)
 
 #******************************************************************************
 
@@ -288,13 +288,20 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
         # The last value of the x list will be the total running time
         self.graph.runningTime = self.graph.x[len(self.graph.x) - 1]
 
+        self.deviceController.turnOnCamera()
+
+        time.sleep(14)
+
         # The connection that this timer has will be executed every 'bleepInterval'
         # milliseconds. This means that 'bleepShower' is triggered every 'bleepInterval' ms
         self.bleepTimer.start(self.graph.bleepInterval)
 
+        time.sleep(0.2)
+
         # This initiates the deviceController thread, so visualizations and the
         # stimulus protocol can be run at the same time
         self.deviceController.start()
+
 
 
 #******************************************************************************
@@ -373,8 +380,8 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
         self.videoPath = self.videoDirectory + "/" + self.selectedVideo.text()
 
-        self.videoWidget.videoPath = self.videoPath
-        self.videoWidget.openFile()
+        # self.videoWidget.videoPath = self.videoPath
+        # self.videoWidget.openFile()
 
 #******************************************************************************
 

@@ -68,18 +68,6 @@ class DeviceController(threading.Thread):
         self.counter = 0
         currentCondition = 0
 
-        # The hardware can now start to receive signals
-        self.task.StartTask()
-
-        self.task.WriteDigitalLines(1, 1, 10.0, DAQmx_Val_GroupByChannel, \
-                                        self.cameraOn, None, None)
-        # time.sleep(2)
-
-        self.task.WriteDigitalLines(1, 1, 10.0, DAQmx_Val_GroupByChannel, \
-                                        self.allOff, None, None)
-
-        # time.sleep(13)
-
         # For every on and off state, the loop is run (the last index is not used)
         for y in self.y[:-1]:
 
@@ -105,3 +93,16 @@ class DeviceController(threading.Thread):
         # Return to default state and stop the task
         self.task.WriteDigitalLines(1, 1, 10.0, DAQmx_Val_GroupByChannel, self.allOff, None, None)
         self.task.StopTask()
+
+    def turnOnCamera(self):
+
+        # The hardware can now start to receive signals
+        self.task.StartTask()
+
+        self.task.WriteDigitalLines(1, 1, 10.0, DAQmx_Val_GroupByChannel, \
+                                        self.cameraOn, None, None)
+
+        time.sleep(2)
+
+        self.task.WriteDigitalLines(1, 1, 10.0, DAQmx_Val_GroupByChannel, \
+                                        self.allOff, None, None)

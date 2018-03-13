@@ -47,10 +47,10 @@ class Ui_MainWindow(object):
         self.videoPreviewFrame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.videoPreviewFrame.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.videoPreviewFrame.setObjectName("videoPreviewFrame")
-        self.videoWidget = VideoPlayer(self.videoPreviewFrame)
-        self.videoWidget.setGeometry(QtCore.QRect(10, 10, 500, 381))
-        self.videoWidget.setMaximumSize(QtCore.QSize(500, 381))
-        self.videoWidget.setObjectName("videoWidget")
+        # self.videoWidget = VideoPlayer(self.videoPreviewFrame)
+        # self.videoWidget.setGeometry(QtCore.QRect(10, 10, 500, 381))
+        # self.videoWidget.setMaximumSize(QtCore.QSize(500, 381))
+        # self.videoWidget.setObjectName("videoWidget")
         self.optionsFrame = QtWidgets.QFrame(self.postExperimentFrame)
         self.optionsFrame.setGeometry(QtCore.QRect(270, 10, 451, 401))
         self.optionsFrame.setFrameShape(QtWidgets.QFrame.StyledPanel)
@@ -386,4 +386,4 @@ class Ui_MainWindow(object):
         self.runButton.setText(_translate("MainWindow", "Run"))
         self.cancelButton.setText(_translate("MainWindow", "Cancel"))
 
-from Classes.VideoPlayer import VideoPlayer
+# from Classes.VideoPlayer import VideoPlayer
