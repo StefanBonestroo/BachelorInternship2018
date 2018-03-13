@@ -9,14 +9,10 @@ date created: 24/02/2018
 date last modified: 07/02/2018
 """
 
-import os
-import sys
-import random
 import time
 import threading
 import numpy as np
 
-from PyQt5 import QtCore, QtGui, QtWidgets
 from PyDAQmx import *
 
 class DeviceController(threading.Thread):
@@ -55,7 +51,6 @@ class DeviceController(threading.Thread):
 
 
         self.allOff = np.array([0,0,0,0,0,0,0,0], dtype = np.uint8)
-        self.cameraOn = np.array([0,0,0,0,0,0,0,1], dtype = np.uint8)
 
 #*******************************************************************************
 
@@ -93,16 +88,4 @@ class DeviceController(threading.Thread):
         # Return to default state and stop the task
         self.task.WriteDigitalLines(1, 1, 10.0, DAQmx_Val_GroupByChannel, self.allOff, None, None)
         self.task.StopTask()
-
-    def turnOnCamera(self):
-
-        # The hardware can now start to receive signals
-        self.task.StartTask()
-
-        self.task.WriteDigitalLines(1, 1, 10.0, DAQmx_Val_GroupByChannel, \
-                                        self.cameraOn, None, None)
-
-        time.sleep(2)
-
-        self.task.WriteDigitalLines(1, 1, 10.0, DAQmx_Val_GroupByChannel, \
-                                        self.allOff, None, None)
+        

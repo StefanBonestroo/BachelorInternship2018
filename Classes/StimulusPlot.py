@@ -100,7 +100,7 @@ class StimulusPlotCanvas(FigureCanvas):
         # When we have reached our total running time the triggering of this function
         # should cease, and all values concerning the run should be reset
         if self.xBleep == self.runningTime:
-            return
+            return 
 
         # The value of 'xBleep' is essentially the time passed in seconds (converted from ms)
         self.xBleep = self.intervalsPassed * self.bleepInterval / self.oneSecond

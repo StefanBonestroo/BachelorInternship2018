@@ -7,13 +7,11 @@ grabbing frames and for processing those frames using different techniques.
 
 created by: Stefan Bonestroo
 date created: 20/02/2018
-date last modified: 07/02/2018
+date last modified: 12/02/2018
 
 """
 
 import cv2
-import time
-import numpy as np
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
