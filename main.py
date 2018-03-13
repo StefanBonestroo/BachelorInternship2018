@@ -5,14 +5,17 @@ This is the main application.
 
 created by: Stefan Bonestroo
 date created: 07/02/2018
-date last modified: 08/02/2018
+date last modified: 13/03/2018
 
 """
 
 import sys
 
-import design
-from Classes.GUI import GUI
+
+from HomeScreen import HomeScreen
+from PreExperimentClasses.GUI import GUI as preGUI
+from PostExperimentClasses.GUI import GUI as postGUI
+
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 def main():
@@ -20,10 +23,26 @@ def main():
     # The application will be run as a QApplication
     app = QtWidgets.QApplication(sys.argv)
 
-    # 'mainscreen' will be a GUI object and will be presented
-    mainScreen = GUI()
-    mainScreen.showFullScreen()
-    app.exec_()
+    # 'homeScreen' will be a GUI object and will be presented
+    homeScreen = HomeScreen()
+    homeScreen.show()
+
+    if not app.exec_():
+
+        homeScreen.close()
+
+        if homeScreen.choice == "Experiment":
+
+            pre = preGUI()
+            pre.show()
+            app.exec_()
+
+        else:
+
+            post = postGUI()
+            post.show()
+            app.exec_()
+
 
 if __name__ == '__main__':
     main()

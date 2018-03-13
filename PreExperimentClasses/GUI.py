@@ -19,14 +19,12 @@ import cv2
 from PyQt5 import QtCore, QtGui, QtWidgets, QtMultimedia, QtMultimediaWidgets
 from goprocam import constants
 
-import design
-from Classes.StimulusPlot import StimulusPlotCanvas
-from Classes.VideoProcessor import VideoProcessor
-from Classes.Controller import DeviceController
-from Classes.VideoPlayer import VideoPlayer
-from Classes.GoProConnector import GoPro
+import GUIFiles.preExperimentGUI
+from PreExperimentClasses.StimulusPlot import StimulusPlotCanvas
+from PreExperimentClasses.Controller import DeviceController
+from PreExperimentClasses.GoProConnector import GoPro
 
-class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
+class GUI(QtWidgets.QMainWindow, GUIFiles.preExperimentGUI.Ui_MainWindow):
 
     def __init__(self, parent = None):
 
@@ -37,11 +35,7 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
 #******************************************************************************
 
-        # Triggers 'setInputDirectory' on the button press
-        self.setInputDirectoryButton.clicked.connect(self.setInputDirectory)
-        self.videoDirectory = None
         self.outputDirectory = None
-
         self.currentFile = None
 
 #******************************************************************************
@@ -95,19 +89,6 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
         self.deviceController = None
         self.updateController()
-
-#******************************************************************************
-
-        self.runAnalysisButton.clicked.connect(self.runAnalysis)
-        self.processor = None
-
-#******************************************************************************
-
-        # This is where the selected video path is stored
-        self.videoPath = None
-
-        self.videoList.currentItemChanged.connect(self.videoPathChanged)
-        # self.videoWidget.mediaPlayer.error.connect(self.handleError)
 
 #******************************************************************************
 
@@ -382,96 +363,6 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
 #******************************************************************************
 
-    def setInputDirectory(self):
-
-        """
-        This function lets the user pick a directory and will present all relevant
-        files inside a QListWidget (video files in our case).
-        """
-
-        # The list is cleared
-        self.videoList.clear()
-
-        # A directory picker is opened
-        self.videoDirectory = QtWidgets.QFileDialog.getExistingDirectory(self,"Choose your directory")
-
-        # If a directory has been chosen, iterate over all files en add all videofiles to the list
-        if self.videoDirectory:
-
-            for video in os.listdir(self.videoDirectory):
-
-                if video.endswith(".mov") or video.endswith(".mp4") or video.endswith(".MP4"):
-
-                    self.videoList.addItem(video)
-
-#******************************************************************************
-
-    def runAnalysis(self):
-
-        """
-        This function runs the analysis of the selected video material when 'Run Analysis'
-        is pressed.
-        """
-
-        text = "Preparing frame grabber..."
-        self.progressLabel.setText(text)
-        self.progressBar.setValue(0)
-        QtWidgets.QApplication.processEvents()
-
-        # A videoProcessor object is created and the frameGrabber function inside
-        # of it will grab every single frame of a video and append its RGB values to an array
-        self.processor = VideoProcessor(self.videoPath)
-
-        grabbingProgress = self.processor.frameGrabber()
-
-        for value in grabbingProgress:
-            self.progressBar.setValue(int(value))
-            QtWidgets.QApplication.processEvents()
-
-        text = "Done grabbing frames"
-        self.progressLabel.setText(text)
-        self.progressBar.setValue(20)
-        QtWidgets.QApplication.processEvents()
-
-        time.sleep(2)
-
-        text = "Processing frames..."
-        self.progressLabel.setText(text)
-        QtWidgets.QApplication.processEvents()
-
-        processProgress = self.processor.frameProcessor()
-
-        for value in processProgress:
-            self.progressBar.setValue(int(value))
-            QtWidgets.QApplication.processEvents()
-
-
-        self.progressBar.setValue(100)
-
-        text = "Done processing the " + str(len(self.processor.grabbedFrames)) + \
-        " frames of " + self.selectedVideo.text()
-        self.progressLabel.setText(text)
-
-#******************************************************************************
-
-    def videoPathChanged(self):
-
-        """
-        This function updates the video input path
-        """
-
-        self.selectedVideo = self.videoList.currentItem()
-
-        # Makes the file/folder names readable by making spaces readable
-        self.videoDirectory = self.videoDirectory.replace(' ', '\ ')
-
-        self.videoPath = self.videoDirectory + "/" + self.selectedVideo.text()
-
-        # self.videoWidget.videoPath = self.videoPath
-        # self.videoWidget.openFile()
-
-#******************************************************************************
-
     def updateController(self):
 
         """
@@ -481,13 +372,6 @@ class GUI(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.deviceController = DeviceController(self.graph.x, self.graph.y, \
                                                 self.conditions, self.graph.runningTime, \
                                                 self.notRandomRadioButton.isChecked())
-
-#******************************************************************************
-
-    def handleError(self):
-
-        # The media player will return an error string if something went wrong
-        self.progressLabel.setText("Error: " + self.videoWidget.mediaPlayer.errorString())
 
 #******************************************************************************
 
