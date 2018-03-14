@@ -20,9 +20,9 @@
    <widget class="QFrame" name="preExperimentFrame">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>60</x>
       <y>10</y>
-      <width>991</width>
+      <width>1141</width>
       <height>631</height>
      </rect>
     </property>
@@ -214,7 +214,7 @@
       <rect>
        <x>540</x>
        <y>320</y>
-       <width>441</width>
+       <width>591</width>
        <height>301</height>
       </rect>
      </property>
@@ -227,9 +227,9 @@
      <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
-        <x>9</x>
-        <y>9</y>
-        <width>421</width>
+        <x>10</x>
+        <y>10</y>
+        <width>571</width>
         <height>281</height>
        </rect>
       </property>
@@ -313,7 +313,7 @@
       <rect>
        <x>460</x>
        <y>10</y>
-       <width>521</width>
+       <width>671</width>
        <height>301</height>
       </rect>
      </property>
@@ -326,9 +326,9 @@
      <widget class="QWidget" name="verticalLayoutWidget_3">
       <property name="geometry">
        <rect>
-        <x>260</x>
+        <x>320</x>
         <y>10</y>
-        <width>251</width>
+        <width>341</width>
         <height>281</height>
        </rect>
       </property>
@@ -369,8 +369,11 @@
         <widget class="QLabel" name="runtimeErrorLabel">
          <property name="font">
           <font>
-           <pointsize>11</pointsize>
+           <pointsize>10</pointsize>
           </font>
+         </property>
+         <property name="lineWidth">
+          <number>2</number>
          </property>
          <property name="text">
           <string/>
@@ -411,7 +414,7 @@
        <rect>
         <x>10</x>
         <y>10</y>
-        <width>241</width>
+        <width>301</width>
         <height>281</height>
        </rect>
       </property>

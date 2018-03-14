@@ -233,7 +233,11 @@ class GUI(QtWidgets.QMainWindow, GUIFiles.preExperimentGUI.Ui_MainWindow):
         if self.currentFile != None:
             self.currentFile.close()
 
-        self.currentFile = open(self.outputDirectory + "/experimentData.txt", "a+")
+        try:
+            self.currentFile = open(self.outputDirectory + "/experimentData.txt", "a+")
+        except:
+            self.runtimeErrorLabel.setText("Please, pick a directory.")
+
 
 #******************************************************************************
 
@@ -359,7 +363,7 @@ class GUI(QtWidgets.QMainWindow, GUIFiles.preExperimentGUI.Ui_MainWindow):
         self.updateStimulusPlot()
 
         self.runButton.setEnabled(True)
-        self.progressLabel.setText("")
+        self.runtimeErrorLabel.setText("")
 
 #******************************************************************************
 
