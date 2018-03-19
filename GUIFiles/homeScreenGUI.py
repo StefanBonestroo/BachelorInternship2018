@@ -12,6 +12,11 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(800, 600)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(MainWindow.sizePolicy().hasHeightForWidth())
+        MainWindow.setSizePolicy(sizePolicy)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayoutWidget = QtWidgets.QWidget(self.centralwidget)
@@ -43,8 +48,8 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.ExperimentOrAnalysisLabel.setText(_translate("MainWindow", "What would you like to do?"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Home"))
+        self.ExperimentOrAnalysisLabel.setText(_translate("MainWindow", "Pick an option:"))
         self.experimentButton.setText(_translate("MainWindow", "Experiment"))
         self.analysisButton.setText(_translate("MainWindow", "Analysis"))
 

@@ -13,8 +13,6 @@ import sys
 
 
 from HomeScreen import HomeScreen
-from PreExperimentClasses.GUI import GUI as preGUI
-from PostExperimentClasses.GUI import GUI as postGUI
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
@@ -33,11 +31,15 @@ def main():
 
         if homeScreen.choice == "Experiment":
 
+            from PreExperimentClasses.GUI import GUI as preGUI
+
             pre = preGUI()
             pre.show()
             app.exec_()
 
         else:
+
+            from PostExperimentClasses.GUI import GUI as postGUI
 
             post = postGUI()
             post.show()

@@ -22,11 +22,8 @@ import numpy as np
 import matplotlib.pyplot as plot
 import matplotlib.animation as animation
 
-# Total amount of frames to be plotted
-framesToBeCaptured = 100
-
 # Create a VideoCapture object
-capture = cv2.VideoCapture(0)
+capture = cv2.VideoCapture('pilot.MP4')
 
 if (capture.isOpened() == False):
   print("Unable to read camera feed")
@@ -54,9 +51,8 @@ view = figure.add_subplot(1,1,1)
 # Counter for x data
 start = time.time()
 
-# # A certain amount of frames is captured and analyzed
-# for i in range(0,framesToBeCaptured):
-while (True):
+# A certain amount of frames is captured and analyzed
+while capture.isOpened():
 
     succesfullyGrabbed, frame = capture.read()
 
@@ -93,7 +89,7 @@ while (True):
         plot.show()
 
         # I get a image/frame size error that a lot of people seem to have
-        # output.write(thresh)
+        # output.write(thresh) 
 
         # After the frame is displayed, make that frame reference for next iteration
         referenceFrame = currentFrame
