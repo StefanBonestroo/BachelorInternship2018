@@ -14,6 +14,7 @@ import sys
 import random
 import time
 import threading
+import numpy as np
 
 import cv2
 from PyQt5 import QtCore, QtGui, QtWidgets, QtMultimedia, QtMultimediaWidgets
@@ -386,7 +387,6 @@ class GUI(QtWidgets.QMainWindow, GUIFiles.preExperimentGUI.Ui_MainWindow):
         cleanChannel = np.array(cleanChannel, dtype = np.uint8)
 
         self.deviceController.allOff = cleanChannel
-
 
         # Change the clean channel
         task = Task()
