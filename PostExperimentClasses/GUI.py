@@ -50,7 +50,7 @@ class GUI(QtWidgets.QMainWindow, GUIFiles.postExperimentGUI.Ui_MainWindow):
         self.videoPath = None
 
         self.videoList.currentItemChanged.connect(self.videoPathChanged)
-        # self.videoWidget.mediaPlayer.error.connect(self.handleError)
+        self.videoWidget.mediaPlayer.error.connect(self.handleError)
 
 #******************************************************************************
 
@@ -139,8 +139,8 @@ class GUI(QtWidgets.QMainWindow, GUIFiles.postExperimentGUI.Ui_MainWindow):
 
         self.videoPath = self.videoDirectory + "/" + self.selectedVideo.text()
 
-        # self.videoWidget.videoPath = self.videoPath
-        # self.videoWidget.openFile()
+        self.videoWidget.videoPath = self.videoPath
+        self.videoWidget.openFile()
 
 #******************************************************************************
 

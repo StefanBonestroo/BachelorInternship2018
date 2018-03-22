@@ -88,4 +88,3 @@ class DeviceController(threading.Thread):
         # Return to default state and stop the task
         self.task.WriteDigitalLines(1, 1, 10.0, DAQmx_Val_GroupByChannel, self.allOff, None, None)
         self.task.StopTask()
-        

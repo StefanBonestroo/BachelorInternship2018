@@ -52,12 +52,16 @@ date last modified: 07-03-2017
 
 import time
 
-from PyQt5.QtCore import QDir, Qt, QUrl, QRect, QSize
+import cv2
 import PyQt5.QtGui
+from PyQt5.QtCore import QDir, Qt, QUrl, QRect, QSize
 from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
 from PyQt5.QtMultimediaWidgets import QVideoWidget
 from PyQt5.QtWidgets import (QApplication, QFileDialog, QHBoxLayout, QLabel,
-        QPushButton, QSizePolicy, QSlider, QStyle, QVBoxLayout, QLayout, QWidget, QSpacerItem)
+        QPushButton, QSizePolicy, QSlider, QStyle, QVBoxLayout, QLayout, QWidget,
+        QSpacerItem, QDesktopWidget)
+
+
 
 class VideoPlayer(QWidget):
 
@@ -72,7 +76,7 @@ class VideoPlayer(QWidget):
 
         # The media player projects the media onto the videoWidget
         self.videoWidget = QVideoWidget()
-        self.videoWidget.setFixedSize(500,330)
+        self.videoWidget.setFixedSize(670,400)
 
 #*******************************************************************************
 
@@ -93,17 +97,17 @@ class VideoPlayer(QWidget):
 #*******************************************************************************
 
         # The widgets are thrown together in a layout
-        controlLayout = QHBoxLayout()
-        controlLayout.setContentsMargins(0,0,0,0)
-        controlLayout.addWidget(self.playButton)
-        controlLayout.addWidget(self.positionSlider)
-        controlLayout.setAlignment(Qt.AlignBottom)
+        self.controlLayout = QHBoxLayout()
+        self.controlLayout.setContentsMargins(0,0,0,0)
+        self.controlLayout.addWidget(self.playButton)
+        self.controlLayout.addWidget(self.positionSlider)
+        self.controlLayout.setAlignment(Qt.AlignBottom)
 
-        superLayout = QVBoxLayout()
+        self.superLayout = QVBoxLayout()
+        self.superLayout.addWidget(self.videoWidget)
+        self.superLayout.addLayout(self.controlLayout)
 
-        superLayout.addWidget(self.videoWidget)
-        superLayout.addLayout(controlLayout)
-        self.setLayout(superLayout)
+        self.setLayout(self.superLayout)
 
 #*******************************************************************************
 
@@ -114,6 +118,15 @@ class VideoPlayer(QWidget):
 
         # This is where the selected video location is stored
         self.videoPath = None
+
+        # Tells us if a preview is visible
+        self.previewed = False
+
+        # Makes sure the videoWidget is centred
+        frame = self.videoWidget.frameGeometry()
+        centre = frame.center()
+        frame.moveCenter(centre)
+        self.move(frame.topLeft())
 
 #*******************************************************************************
 
@@ -127,22 +140,53 @@ class VideoPlayer(QWidget):
 
             self.mediaPlayer.setMedia(content)
 
+            self.previewed = False
+
+            image = self.getPreview()
+
+#*******************************************************************************
+
+    def getPreview(self):
+
+        capture = cv2.videoCapture(self.videoPath)
+
+        if not capture.isOpened():
+            return None
+
+        height = int(capture.get(3))
+        width = int(capture.get(4))
+
+        success, frame = capture.read()
+        
+
 #*******************************************************************************
 
     def play(self):
 
+        if not self.previewed:
+
+            self.superLayout = QVBoxLayout()
+            self.superLayout.addWidget(self.videoWidget)
+            self.superLayout.addLayout(self.controlLayout)
+
+            self.setLayout(self.superLayout)
+
+            self.previewed = True
+
         if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
             self.mediaPlayer.pause()
+            self.videoWidget.setFixedSize(671,400)
         else:
             self.mediaPlayer.play()
+            self.videoWidget.setFixedSize(669,400)
 #*******************************************************************************
 
     def mediaStateChanged(self, state):
 
         if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
-            self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
-        else:
             self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
+        else:
+            self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
 
 #*******************************************************************************
 

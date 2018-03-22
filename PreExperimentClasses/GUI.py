@@ -18,6 +18,7 @@ import threading
 import cv2
 from PyQt5 import QtCore, QtGui, QtWidgets, QtMultimedia, QtMultimediaWidgets
 from goprocam import constants
+from PyDAQmx import *
 
 import GUIFiles.preExperimentGUI
 from PreExperimentClasses.StimulusPlot import StimulusPlotCanvas
@@ -89,6 +90,8 @@ class GUI(QtWidgets.QMainWindow, GUIFiles.preExperimentGUI.Ui_MainWindow):
 
         self.deviceController = None
         self.updateController()
+
+        self.setCleanChannel.clicked.connect(self.updateController)
 
 #******************************************************************************
 
@@ -373,9 +376,24 @@ class GUI(QtWidgets.QMainWindow, GUIFiles.preExperimentGUI.Ui_MainWindow):
         This function updates the values of the stimulusProtocol inside of the controller
         """
 
+        # Update all values in the deviceController
         self.deviceController = DeviceController(self.graph.x, self.graph.y, \
                                                 self.conditions, self.graph.runningTime, \
                                                 self.notRandomRadioButton.isChecked())
+
+        # The user selected clean channel
+        cleanChannel = self.deviceController.channels[self.cleanChannelSpinBox.value()]
+        cleanChannel = np.array(cleanChannel, dtype = np.uint8)
+
+        self.deviceController.allOff = cleanChannel
+
+
+        # Change the clean channel
+        task = Task()
+        task.CreateDOChan("/cDAQ1Mod1/port0/line0:7","",DAQmx_Val_ChanForAllLines)
+
+        task.WriteDigitalLines(1, 1, 10.0, DAQmx_Val_GroupByChannel, cleanChannel, None, None)
+        task.StopTask()
 
 #******************************************************************************
 
