@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1908</width>
-    <height>882</height>
+    <width>1280</width>
+    <height>751</height>
    </rect>
   </property>
   <property name="cursor">
@@ -362,6 +362,31 @@
             </widget>
            </item>
           </layout>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_6">
+         <item>
+          <widget class="QLabel" name="cleanChannelLabel">
+           <property name="text">
+            <string>Clean Channel:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="cleanChannelSpinBox">
+           <property name="maximum">
+            <number>3</number>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="setCleanChannel">
+           <property name="text">
+            <string>Set</string>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>

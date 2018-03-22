@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1277</width>
-    <height>980</height>
+    <width>1584</width>
+    <height>751</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>1431</width>
+      <width>1421</width>
       <height>511</height>
      </rect>
     </property>
@@ -92,7 +92,7 @@
       <rect>
        <x>730</x>
        <y>10</y>
-       <width>691</width>
+       <width>681</width>
        <height>491</height>
       </rect>
      </property>
@@ -105,15 +105,15 @@
      <widget class="VideoPlayer" name="videoWidget" native="true">
       <property name="geometry">
        <rect>
-        <x>10</x>
-        <y>10</y>
+        <x>0</x>
+        <y>0</y>
         <width>671</width>
         <height>471</height>
        </rect>
       </property>
       <property name="maximumSize">
        <size>
-        <width>671</width>
+        <width>680</width>
         <height>471</height>
        </size>
       </property>
@@ -287,8 +287,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1277</width>
-     <height>21</height>
+     <width>1584</width>
+     <height>22</height>
     </rect>
    </property>
   </widget>
