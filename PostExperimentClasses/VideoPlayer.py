@@ -142,13 +142,11 @@ class VideoPlayer(QWidget):
 
             self.previewed = False
 
-            image = self.getPreview()
-
 #*******************************************************************************
 
     def getPreview(self):
 
-        capture = cv2.videoCapture(self.videoPath)
+        capture = cv2.VideoCapture(self.videoPath)
 
         if not capture.isOpened():
             return None
@@ -157,7 +155,12 @@ class VideoPlayer(QWidget):
         width = int(capture.get(4))
 
         success, frame = capture.read()
-        
+
+        capture.release()
+
+        self.previewed = True
+
+        return frame, height, width
 
 #*******************************************************************************
 

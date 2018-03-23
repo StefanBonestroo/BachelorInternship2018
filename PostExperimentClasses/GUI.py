@@ -23,6 +23,7 @@ import GUIFiles.postExperimentGUI
 
 from PostExperimentClasses.VideoProcessor import VideoProcessor
 from PostExperimentClasses.VideoPlayer import VideoPlayer
+from PostExperimentClasses.VideoCutter import VideoCutter
 
 class GUI(QtWidgets.QMainWindow, GUIFiles.postExperimentGUI.Ui_MainWindow):
 
@@ -54,6 +55,12 @@ class GUI(QtWidgets.QMainWindow, GUIFiles.postExperimentGUI.Ui_MainWindow):
 
 #******************************************************************************
 
+        self.cutter = None
+
+        self.selectRoiButton.clicked.connect(self.selectROI)
+
+#******************************************************************************
+
     def setInputDirectory(self):
 
         """
@@ -75,6 +82,18 @@ class GUI(QtWidgets.QMainWindow, GUIFiles.postExperimentGUI.Ui_MainWindow):
                 if video.endswith(".mov") or video.endswith(".mp4") or video.endswith(".MP4"):
 
                     self.videoList.addItem(video)
+
+#******************************************************************************
+
+    def selectROI(self):
+
+        if self.videoPath != None:
+
+            image, height, width = self.videoWidget.getPreview()
+
+            self.cutter = VideoCutter(image, height, width)
+
+            self.cutter.selectROI()
 
 #******************************************************************************
 
