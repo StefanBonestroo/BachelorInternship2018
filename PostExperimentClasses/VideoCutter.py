@@ -1,22 +1,18 @@
+import os
+
 import cv2
 import argparse
 
 class VideoCutter:
 
-    def __init__(self, image, height, width):
+    def __init__(self, image):
 
         self.image = image
-        self.clone = image.copy()
         self.windowName = "Select your ROI"
-
-        self.height = height
-        self.width = width
-
-        self.ROI = None
-
 
     def selectROI(self):
 
-        self.ROI = cv2.selectROI(self.windowName, self.image, False, False)
+        ROI = cv2.selectROI(self.windowName, self.image, False, False)
+        cv2.destroyAllWindows()
 
-        print(self.ROI)
+        return ROI

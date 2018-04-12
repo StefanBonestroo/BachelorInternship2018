@@ -35,6 +35,11 @@ class GUI(QtWidgets.QMainWindow, GUIFiles.preExperimentGUI.Ui_MainWindow):
         super(GUI, self).__init__(parent)
         self.setupUi(self)
 
+        screen = self.frameGeometry()
+        centre = QtWidgets.QDesktopWidget().availableGeometry().center()
+        screen.moveCenter(centre)
+        self.move(screen.topLeft())
+
 #******************************************************************************
 
         self.outputDirectory = None

@@ -21,17 +21,14 @@ class VideoProcessor:
 
         self.path = path
 
-        self.grabbedFrames = []
-        self.grabbedPreviewFrames = []
+        self.terminated = False
 
-        self.processedFrames = []
-        self.processedPreviewFrames = []
+        self.processedFrames = [[]]
 
-        self.dimensions = None
-
-        self.previewDimensions = (500, 281)
-
-        self.fps = 30
+        self.fps = 120
+        self.referenceFrame = None
+        self.numberOfFrames = 0
+        self.AllROI = []
 
 #*******************************************************************************
 
@@ -42,14 +39,15 @@ class VideoProcessor:
         stores these in an array.
         """
 
-        value = 0
-        increment = 20/5000
-
         # This opens a video capture
         capture = cv2.VideoCapture(self.path)
 
         if not capture.isOpened():
             print("Error opening video file")
+            return
+
+        self.numberOfFrames = int(capture.get(cv2.CAP_PROP_FRAME_COUNT))
+        self.increment = 100/self.numberOfFrames
 
         # Stores the RGB values of every single frame in 'grabbedFrames'
         while (capture.isOpened()):
@@ -58,78 +56,43 @@ class VideoProcessor:
 
             if succesful:
 
-                self.grabbedFrames.append(frame)
+                yield frame
 
-                # The unprocessed are made to also have preview versions
-                preview = cv2.resize(frame, self.previewDimensions)
-                preview = bytearray(preview)
-                preview = QtCore.QByteArray(preview)
+            if self.terminated:
+                return
 
-                self.grabbedPreviewFrames.append(preview)
-
-                value += increment
-                if value > 20:
-                    yield 20
-                else:
-                    yield value
-
-            else:
-                break
-
-        # When everything done, release the video capture object
-        capture.release()
 
 #*******************************************************************************
 
-    def frameProcessor(self):
+    def frameProcessor(self, frame):
 
         """
         This function processes the grabbed frames in 'self.grabbedFrames' using
         different techniques.
         """
 
-        # The reference frame will be the previous frame
-        referenceFrame = None
+        # A frame will converted to a grayscale image
+        grayImage = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-        # ProgressBar startingpoint
-        value = 20.0
+        # A Gaussian blur will be applied to that frame to cancel out noise
+        blurredImage = cv2.GaussianBlur(grayImage, (21, 21), 0)
 
-        increment = 80.0/(len(self.grabbedFrames))
+        # Makes sure the first screen is black
+        if self.referenceFrame is None:
+            self.referenceFrame = blurredImage
 
-        for frame in self.grabbedFrames:
+        # Max a black and white view of the absolute difference between the
+        # image and the reference frame
+        frameDelta = cv2.absdiff(self.referenceFrame, blurredImage)
+        threshold = cv2.threshold(frameDelta, 25, 255, cv2.THRESH_BINARY)[1]
 
-            # A frame will converted to a grayscale image
-            grayImage = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        # Dilate the thresholded image to fill in holes
+        threshold = cv2.dilate(threshold, None, iterations=2)
 
-            # A Gaussian blur will be applied to that frame to cancel out noise
-            blurredImage = cv2.GaussianBlur(grayImage, (21, 21), 0)
+        self.referenceFrame = blurredImage
 
-            # Makes sure the first screen is black
-            if referenceFrame is None:
-                referenceFrame = blurredImage
+        for ROI in self.AllROI:
+            r = ROI
+            processedFrame = threshold[int(r[1]):int(r[1]+r[3]), int(r[0]):int(r[0]+r[2])]
 
-            # Max a black and white view of the absolute difference between the
-            # image and the reference frame
-            frameDelta = cv2.absdiff(referenceFrame, blurredImage)
-            threshold = cv2.threshold(frameDelta, 25, 255, cv2.THRESH_BINARY)[1]
-
-            # Dilate the thresholded image to fill in holes
-            threshold = cv2.dilate(threshold, None, iterations=2)
-            # writableFrame = cv2.cvtColor(threshold,cv2.COLOR_GRAY2BGR)
-
-            referenceFrame = blurredImage
-
-            # The processed frame will be stored in an array
-            self.processedFrames.append(threshold)
-
-            # A preview of the processed frame is made
-            preview = cv2.resize(threshold, self.previewDimensions)
-            preview = bytearray(preview)
-            preview = QtCore.QByteArray(preview)
-
-            self.processedPreviewFrames.append(preview)
-
-            value += increment
-            yield value
-
-        self.dimensions = threshold.shape
+        return

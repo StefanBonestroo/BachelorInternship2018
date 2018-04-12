@@ -1,0 +1,268 @@
+
+--------------------------------------------------
+EXPERIMENT DATA - RUN: Thu Mar 15 17:17:29 2018
+--------------------------------------------------
+
+Conditions: ['N', 'P', 'HS', 'HV']
+Random: False
+GoPro filename: GOPR8855
+Notes: hv & hs 1
+Copied data into lab journal: YES
+
+
+--------------------------------------------------
+EXPERIMENT DATA - RUN: Mon Mar 19 16:41:26 2018
+--------------------------------------------------
+
+Conditions: ['P', 'N', 'HS', 'HV']
+Random: False
+GoPro filename: GOPR8858
+Notes: hv & hs 2 - 3rd run
+Copied data into lab journal: YES
+
+
+--------------------------------------------------
+EXPERIMENT DATA - RUN: Mon Mar 19 18:29:44 2018
+--------------------------------------------------
+
+Conditions: ['HS', 'P', 'N', 'HV']
+Random: False
+GoPro filename: GOPR8860
+Notes: hv & hs 3
+Copied data into lab journal: YES
+
+
+--------------------------------------------------
+EXPERIMENT DATA - RUN: Tue Mar 20 15:42:41 2018
+--------------------------------------------------
+
+Conditions: ['HV', 'P', 'N', 'HS']
+Random: False
+GoPro filename: GOPR8861
+Notes: hv & hs 4
+Copied data into lab journal: YES
+
+
+--------------------------------------------------
+EXPERIMENT DATA - RUN: Tue Mar 20 16:50:29 2018
+--------------------------------------------------
+
+Conditions: ['N', 'HV', 'P', 'HS']
+Random: False
+GoPro filename: GOPR8862
+Notes: hv & hs 5
+Copied data into lab journal: YES
+
+
+--------------------------------------------------
+EXPERIMENT DATA - RUN: Tue Mar 20 18:12:00 2018
+--------------------------------------------------
+
+Conditions: ['P', 'HV', 'N', 'HS']
+Random: False
+GoPro filename: GOPR8863
+Notes: hv & hs 6
+Copied data into lab journal: YES
+
+
+--------------------------------------------------
+EXPERIMENT DATA - RUN: Wed Mar 21 16:03:08 2018
+--------------------------------------------------
+
+Conditions: ['HS', 'N', 'P', 'HV']
+Random: False
+GoPro filename: GOPR8864
+Notes: hv & hs 7
+Copied data into lab journal: YES
+
+
+--------------------------------------------------
+EXPERIMENT DATA - RUN: Wed Mar 21 17:15:13 2018
+--------------------------------------------------
+
+Conditions: ['HV', 'N', 'P', 'HS']
+Random: False
+GoPro filename: 
+Notes: hv & hs 8
+Copied data into lab journal: YES
+
+
+--------------------------------------------------
+EXPERIMENT DATA - RUN: Wed Mar 21 18:24:17 2018
+--------------------------------------------------
+
+Conditions: ['N', 'P', 'HV', 'HS']
+Random: False
+GoPro filename: GOPR8867
+Notes: hv & hs 9
+Copied data into lab journal: YES
+
+
+
+--------------------------------------------------
+EXPERIMENT DATA - RUN: Tue Apr  3 16:15:25 2018
+--------------------------------------------------
+
+Conditions: ['P', 'N', 'HV', 'HS']
+Random: False
+GoPro filename: GOPR8870
+Notes: hv & hs 10
+Copied data into lab journal: YES
+
+
+--------------------------------------------------
+EXPERIMENT DATA - RUN: Tue Apr  3 17:31:15 2018
+--------------------------------------------------
+
+Conditions: ['HS', 'P', 'HV', 'N']
+Random: False
+GoPro filename: GOPR8871
+Notes: hv & hs 11 
+Copied data into lab journal: YES
+
+
+
+--------------------------------------------------
+EXPERIMENT DATA - RUN: Wed Apr  4 14:52:39 2018
+--------------------------------------------------
+
+Conditions: ['HV', 'P', 'HS', 'N']
+Random: False
+GoPro filename: GOPR8872
+Notes: hv & hs 12
+Copied data into lab journal: YES
+
+
+--------------------------------------------------
+EXPERIMENT DATA - RUN: Wed Apr  4 15:52:08 2018
+--------------------------------------------------
+
+Conditions: ['N', 'HV', 'HS', 'P']
+Random: False
+GoPro filename: GOPR8873
+Notes: hv & hs 13
+Copied data into lab journal: YES
+
+
+--------------------------------------------------
+EXPERIMENT DATA - RUN: Wed Apr  4 17:00:00 2018
+--------------------------------------------------
+
+Conditions: ['P', 'HV', 'HS', 'N']
+Random: False
+GoPro filename: GOPR8874
+Notes: hv & hs 14
+Copied data into lab journal: YES
+
+
+--------------------------------------------------
+EXPERIMENT DATA - RUN: Thu Apr  5 15:22:58 2018
+--------------------------------------------------
+
+Conditions: ['HS', 'N', 'HV', 'P']
+Random: False
+GoPro filename: GOPR8875
+Notes:  hv & hs 15
+Copied data into lab journal: YES
+
+
+--------------------------------------------------
+EXPERIMENT DATA - RUN: Thu Apr  5 16:26:56 2018
+--------------------------------------------------
+
+Conditions: ['HV', 'N', 'HS', 'P']
+Random: False
+GoPro filename: GOPR8876
+Notes: hv & hs 16
+Copied data into lab journal: YES
+
+
+--------------------------------------------------
+EXPERIMENT DATA - RUN: Thu Apr  5 17:39:33 2018
+--------------------------------------------------
+
+Conditions: ['N', 'HS', 'P', 'HV']
+Random: False
+GoPro filename: GOPR8877
+Notes: hv & hs 17
+Copied data into lab journal: YES
+
+
+
+--------------------------------------------------
+EXPERIMENT DATA - RUN: Mon Apr  9 15:02:03 2018
+--------------------------------------------------
+
+Conditions: ['P', 'HS', 'N', 'HV']
+Random: False
+GoPro filename: GOPR8878
+Notes: hv & hs 18
+Copied data into lab journal: YES
+
+
+--------------------------------------------------
+EXPERIMENT DATA - RUN: Mon Apr  9 16:16:23 2018
+--------------------------------------------------
+
+Conditions: ['HS', 'HV', 'P', 'N']
+Random: False
+GoPro filename: GOPR8879
+Notes: hv & hs 19
+Copied data into lab journal: YES
+
+
+--------------------------------------------------
+EXPERIMENT DATA - RUN: Mon Apr  9 17:21:56 2018
+--------------------------------------------------
+
+Conditions: ['HV', 'HS', 'P', 'N']
+Random: False
+GoPro filename: GOPR8880
+Notes: hv & hs 20
+Copied data into lab journal: YES
+
+
+--------------------------------------------------
+EXPERIMENT DATA - RUN: Tue Apr 10 15:27:35 2018
+--------------------------------------------------
+
+Conditions: ['N', 'HS', 'HV', 'P']
+Random: False
+GoPro filename: GOPR8881
+Notes: hv & hs 21
+Copied data into lab journal: YES
+
+
+--------------------------------------------------
+EXPERIMENT DATA - RUN: Tue Apr 10 16:46:44 2018
+--------------------------------------------------
+
+Conditions: ['P', 'HS', 'HV', 'N']
+Random: False
+GoPro filename: GOPR8882
+Notes: hv & hs 22
+Copied data into lab journal: YES
+
+
+--------------------------------------------------
+EXPERIMENT DATA - RUN: Wed Apr 11 15:59:32 2018
+--------------------------------------------------
+
+Conditions: ['HS', 'HV', 'N', 'P']
+Random: False
+GoPro filename: GOPR8883
+Notes: hv & hs 23
+Copied data into lab journal: YES
+
+
+--------------------------------------------------
+EXPERIMENT DATA - RUN: Wed Apr 11 16:54:55 2018
+--------------------------------------------------
+
+Conditions: ['HV', 'HS', 'N', 'P']
+Random: False
+GoPro filename: GOPR8884
+Notes: hv & hs 24
+Copied data into lab journal: YES
+
+

@@ -34,6 +34,11 @@ class GUI(QtWidgets.QMainWindow, GUIFiles.postExperimentGUI.Ui_MainWindow):
         super(GUI, self).__init__(parent)
         self.setupUi(self)
 
+        screen = self.frameGeometry()
+        centre = QtWidgets.QDesktopWidget().availableGeometry().center()
+        screen.moveCenter(centre)
+        self.move(screen.topLeft())
+
 #******************************************************************************
 
         # Triggers 'setInputDirectory' on the button press
@@ -43,6 +48,7 @@ class GUI(QtWidgets.QMainWindow, GUIFiles.postExperimentGUI.Ui_MainWindow):
 #******************************************************************************
 
         self.runAnalysisButton.clicked.connect(self.runAnalysis)
+        self.stopAnalysisButton.clicked.connect(self.stopAnalysis)
         self.processor = None
 
 #******************************************************************************
@@ -58,6 +64,7 @@ class GUI(QtWidgets.QMainWindow, GUIFiles.postExperimentGUI.Ui_MainWindow):
         self.cutter = None
 
         self.selectRoiButton.clicked.connect(self.selectROI)
+        self.clearRoiButton.clicked.connect(self.clearROI)
 
 #******************************************************************************
 
@@ -91,9 +98,17 @@ class GUI(QtWidgets.QMainWindow, GUIFiles.postExperimentGUI.Ui_MainWindow):
 
             image, height, width = self.videoWidget.getPreview()
 
-            self.cutter = VideoCutter(image, height, width)
+            self.cutter = VideoCutter(image)
 
-            self.cutter.selectROI()
+            ROI = self.cutter.selectROI()
+
+            self.roiListWidget.addItem(str(ROI))
+
+#******************************************************************************
+
+    def clearROI(self):
+
+        self.roiListWidget.clear()
 
 #******************************************************************************
 
@@ -104,46 +119,71 @@ class GUI(QtWidgets.QMainWindow, GUIFiles.postExperimentGUI.Ui_MainWindow):
         is pressed.
         """
 
-        text = "Preparing frame grabber..."
-        self.progressLabel.setText(text)
+        self.runAnalysisButton.setEnabled(False)
+
+        self.progressLabel.setText("Grabbing frames...")
         self.progressBar.setValue(0)
         QtWidgets.QApplication.processEvents()
 
+        if self.roiListWidget.item(0) == None:
+
+            self.progressLabel.setText("Provide at least one Region Of Interest (ROI).")
+            QtWidgets.QApplication.processEvents()
+            return
+
         # A videoProcessor object is created and the frameGrabber function inside
-        # of it will grab every single frame of a video and append its RGB values to an array
         self.processor = VideoProcessor(self.videoPath)
+        grabber = self.processor.frameGrabber()
 
-        grabbingProgress = self.processor.frameGrabber()
+        for i in range(self.roiListWidget.count()):
 
-        for value in grabbingProgress:
-            self.progressBar.setValue(int(value))
+            ROI = self.roiListWidget.item(i).text()
+            ROI = list(eval(ROI))
+            self.processor.AllROI.append(ROI)
+
+        self.processor.processedFrames = [[] for _ in range(self.roiListWidget.count())]
+        self.processor.referenceFrame = None
+        counter = 0
+        value = 0
+
+        for grabbedFrame in grabber:
+
+            text = "Processing frame " + str(counter) + " of " + str(self.processor.numberOfFrames) + " frames..."
+            self.progressLabel.setText(text)
             QtWidgets.QApplication.processEvents()
 
-        text = "Done grabbing frames"
-        self.progressLabel.setText(text)
-        self.progressBar.setValue(20)
-        QtWidgets.QApplication.processEvents()
+            self.processor.frameProcessor(grabbedFrame)
 
-        time.sleep(2)
+            if self.processor.terminated:
 
-        text = "Processing frames..."
-        self.progressLabel.setText(text)
-        QtWidgets.QApplication.processEvents()
+                self.progressLabel.setText("The analysis was stopped.")
+                self.progressBar.setValue(0)
+                QtWidgets.QApplication.processEvents()
+                break
 
-        processProgress = self.processor.frameProcessor()
+            counter += 1
 
-        for value in processProgress:
-            self.progressBar.setValue(int(value))
+            value += self.processor.increment
+            self.progressBar.setValue(value)
             QtWidgets.QApplication.processEvents()
 
+        if not self.processor.terminated:
 
-        self.progressBar.setValue(100)
+            self.progressBar.setValue(100)
+            text = "Done processing the " + str(self.processor.numberOfFrames) + \
+            " frames of " + self.selectedVideo.text()
+            self.progressLabel.setText(text)
 
-        text = "Done processing the " + str(len(self.processor.grabbedFrames)) + \
-        " frames of " + self.selectedVideo.text()
-        self.progressLabel.setText(text)
+        self.runAnalysisButton.setEnabled(True)
 
 #******************************************************************************
+
+    def stopAnalysis(self):
+
+        self.processor.terminated = True
+
+#******************************************************************************
+
 
     def videoPathChanged(self):
 
