@@ -76,7 +76,6 @@ class GUI(QtWidgets.QMainWindow, GUIFiles.preExperimentGUI.Ui_MainWindow):
         self.addConditionButton.clicked.connect(self.addToProtocol)
         self.clearProtocolButton.clicked.connect(self.clearProtocol)
 
-        self.testStimulusButton.clicked.connect(self.testStimulus)
         self.downloadLastDataButton.clicked.connect(self.downloadData)
 
 #******************************************************************************
@@ -193,20 +192,6 @@ class GUI(QtWidgets.QMainWindow, GUIFiles.preExperimentGUI.Ui_MainWindow):
             self.stimulusProtocolList.setCurrentRow(0)
 
             self.updateStimulusPlot()
-
-#******************************************************************************
-
-    def testStimulus(self):
-
-        """
-        This function enables the user to test out a stimulus.
-        """
-
-        if len(self.conditions) is not 0:
-
-            index = self.stimulusProtocolList.currentRow()
-            print(self.conditions[index])
-
 
 #******************************************************************************
 

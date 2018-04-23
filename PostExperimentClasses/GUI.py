@@ -18,12 +18,12 @@ import threading
 import cv2
 from PyQt5 import QtCore, QtGui, QtWidgets, QtMultimedia, QtMultimediaWidgets
 
-
 import GUIFiles.postExperimentGUI
 
 from PostExperimentClasses.VideoProcessor import VideoProcessor
 from PostExperimentClasses.VideoPlayer import VideoPlayer
 from PostExperimentClasses.VideoCutter import VideoCutter
+from PostExperimentClasses.RawDataPlotter import plotRawData
 
 class GUI(QtWidgets.QMainWindow, GUIFiles.postExperimentGUI.Ui_MainWindow):
 
@@ -66,6 +66,8 @@ class GUI(QtWidgets.QMainWindow, GUIFiles.postExperimentGUI.Ui_MainWindow):
         self.selectRoiButton.clicked.connect(self.selectROI)
         self.clearRoiButton.clicked.connect(self.clearROI)
 
+        self.previewOutputButton.clicked.connect(self.runPreview)
+
 #******************************************************************************
 
     def setInputDirectory(self):
@@ -94,15 +96,22 @@ class GUI(QtWidgets.QMainWindow, GUIFiles.postExperimentGUI.Ui_MainWindow):
 
     def selectROI(self):
 
+        """
+        The function allows the user to select Regions of Interest (ROI).
+        """
+
         if self.videoPath != None:
 
-            image, height, width = self.videoWidget.getPreview()
+            # image, height, width = self.videoWidget.getPreview()
 
-            self.cutter = VideoCutter(image)
+            # self.cutter = VideoCutter(image)
 
-            ROI = self.cutter.selectROI()
+            # ROI = self.cutter.selectROI()
 
-            self.roiListWidget.addItem(str(ROI))
+            self.roiListWidget.addItem("(314, 56, 390, 348)")
+            self.roiListWidget.addItem("(272, 452, 451, 413)")
+            self.roiListWidget.addItem("(700, 53, 396, 340)")
+
 
 #******************************************************************************
 
@@ -112,7 +121,24 @@ class GUI(QtWidgets.QMainWindow, GUIFiles.postExperimentGUI.Ui_MainWindow):
 
 #******************************************************************************
 
-    def runAnalysis(self):
+    def runPreview(self):
+
+        """
+        This function runs a 5 second preview of the processed frames.
+        """
+
+        error = self.runAnalysis(True)
+
+        self.progressBar.setValue(0)
+
+        if not error:
+
+            self.progressLabel.setText("")
+            QtWidgets.QApplication.processEvents()
+
+#******************************************************************************
+
+    def runAnalysis(self, preview = False):
 
         """
         This function runs the analysis of the selected video material when 'Run Analysis'
@@ -121,39 +147,83 @@ class GUI(QtWidgets.QMainWindow, GUIFiles.postExperimentGUI.Ui_MainWindow):
 
         self.runAnalysisButton.setEnabled(False)
 
+        # User options are stored in these variables
+        gaussianBlur = self.gaussianCheckBox.isChecked()
+        averageDifferenceFrames = self.middleFrameCheckBox.isChecked()
+        useBlank = self.useBlankCheckBox.isChecked()
+        pixelThreshold = self.thresholdSpinBox.value()
+        dilation = self.dilationSpinBox.value()
+        startFrame = self.frameNumberSpinBox.value()
+
         self.progressLabel.setText("Grabbing frames...")
         self.progressBar.setValue(0)
         QtWidgets.QApplication.processEvents()
 
+        # The user must enter at least one ROI
         if self.roiListWidget.item(0) == None:
 
             self.progressLabel.setText("Provide at least one Region Of Interest (ROI).")
             QtWidgets.QApplication.processEvents()
-            return
+            return True
 
         # A videoProcessor object is created and the frameGrabber function inside
-        self.processor = VideoProcessor(self.videoPath)
+        self.processor = VideoProcessor(self.videoPath, preview, startFrame)
         grabber = self.processor.frameGrabber()
 
-        for i in range(self.roiListWidget.count()):
 
-            ROI = self.roiListWidget.item(i).text()
+        # If the user selected the preview option preview only the selected ROI
+        if preview:
+
+            item = self.roiListWidget.currentItem()
+            if item == None:
+
+                self.progressLabel.setText("Select a Region Of Interest (ROI).")
+                QtWidgets.QApplication.processEvents()
+                return True
+
+            ROI = item.text()
             ROI = list(eval(ROI))
             self.processor.AllROI.append(ROI)
 
-        self.processor.processedFrames = [[] for _ in range(self.roiListWidget.count())]
+            self.processor.increment = 100/(5 * self.processor.fps)
+
+
+        # Else fully process all the frames for all ROIs
+        else:
+
+            for i in range(self.roiListWidget.count()):
+
+                ROI = self.roiListWidget.item(i).text()
+                ROI = list(eval(ROI))
+                self.processor.AllROI.append(ROI)
+
+        # This creates the data structure where all data will be stored:
+        # A list containing lists for every ROI, which then contain an x and a y value
+        self.processor.processedFrames = [[list() for i in range(2)] for j in range(self.roiListWidget.count())]
         self.processor.referenceFrame = None
-        counter = 0
+
+        # Frame counter
+        counter = 1
+        # Value of the progress bar
         value = 0
 
+        # For every frame yielded from the frame grabber do this:
         for grabbedFrame in grabber:
 
-            text = "Processing frame " + str(counter) + " of " + str(self.processor.numberOfFrames) + " frames..."
+            if preview:
+                text = "Showing 5-second preview..."
+            else:
+                text = "Processing frame " + str(counter) + " of " + \
+                        str(self.processor.numberOfFrames) + " frames..."
+
             self.progressLabel.setText(text)
             QtWidgets.QApplication.processEvents()
 
-            self.processor.frameProcessor(grabbedFrame)
+            # Give the frame + a bunch of options to the processor
+            self.processor.frameProcessor(grabbedFrame, gaussianBlur, useBlank,\
+                                            pixelThreshold, dilation, averageDifferenceFrames)
 
+            # The user can stop the analysis, thats when this runs
             if self.processor.terminated:
 
                 self.progressLabel.setText("The analysis was stopped.")
@@ -163,24 +233,57 @@ class GUI(QtWidgets.QMainWindow, GUIFiles.postExperimentGUI.Ui_MainWindow):
 
             counter += 1
 
+            # Change the progress bar value
             value += self.processor.increment
             self.progressBar.setValue(value)
             QtWidgets.QApplication.processEvents()
 
-        if not self.processor.terminated:
+            # If all frames have been processed end
+            if counter >= self.processor.numberOfFrames:
+                break
+            # For the preview, it is after 5 seconds
+            elif counter >= (5 * self.processor.fps) and preview:
+                break
+
+        # If a grabber video contains no frames, something went wrong
+        if self.processor.numberOfFrames == 0:
+
+            self.progressLabel.setText("Error: Could not open video file")
+            self.stopAnalysis()
+            self.progressBar.setValue(0)
+
+        # If everything goes well, communicate it to the user.
+        if not self.processor.terminated and not preview:
 
             self.progressBar.setValue(100)
             text = "Done processing the " + str(self.processor.numberOfFrames) + \
             " frames of " + self.selectedVideo.text()
             self.progressLabel.setText(text)
+            data = self.processor.processedFrames
+
+            if not preview:
+                plotRawData(data)
+
+        # Release stuff
+        cv2.destroyAllWindows()
+        self.processor.capture.release()
 
         self.runAnalysisButton.setEnabled(True)
+        QtWidgets.QApplication.processEvents()
+
 
 #******************************************************************************
 
     def stopAnalysis(self):
 
-        self.processor.terminated = True
+        """
+        This function terminates the experiment
+        """
+
+        if self.processor != None:
+            self.processor.terminated = True
+
+        self.runAnalysisButton.setEnabled(True)
 
 #******************************************************************************
 
@@ -191,10 +294,16 @@ class GUI(QtWidgets.QMainWindow, GUIFiles.postExperimentGUI.Ui_MainWindow):
         This function updates the video input path
         """
 
+        self.progressLabel.setText("")
+        self.progressBar.setValue(0)
+
         self.selectedVideo = self.videoList.currentItem()
 
         # Makes the file/folder names readable by making spaces readable
         self.videoDirectory = self.videoDirectory.replace(' ', '\ ')
+
+        if self.selectedVideo == None:
+            return
 
         self.videoPath = self.videoDirectory + "/" + self.selectedVideo.text()
 
