@@ -76,7 +76,7 @@ class VideoPlayer(QWidget):
 
         # The media player projects the media onto the videoWidget
         self.videoWidget = QVideoWidget()
-        self.videoWidget.setFixedSize(670,400)
+        self.videoWidget.setFixedSize(450,300)
 
 #*******************************************************************************
 
@@ -106,6 +106,7 @@ class VideoPlayer(QWidget):
         self.superLayout = QVBoxLayout()
         self.superLayout.addWidget(self.videoWidget)
         self.superLayout.addLayout(self.controlLayout)
+        self.superLayout.addStretch(1)
 
         self.setLayout(self.superLayout)
 
@@ -119,8 +120,6 @@ class VideoPlayer(QWidget):
         # This is where the selected video location is stored
         self.videoPath = None
 
-        # Tells us if a preview is visible
-        self.previewed = False
 
         # Makes sure the videoWidget is centred
         frame = self.videoWidget.frameGeometry()
@@ -140,48 +139,16 @@ class VideoPlayer(QWidget):
 
             self.mediaPlayer.setMedia(content)
 
-            self.previewed = False
-
-#*******************************************************************************
-
-    def getPreview(self):
-
-        capture = cv2.VideoCapture(self.videoPath)
-
-        if not capture.isOpened():
-            return None
-
-        height = int(capture.get(3))
-        width = int(capture.get(4))
-
-        success, frame = capture.read()
-
-        capture.release()
-
-        self.previewed = True
-
-        return frame, height, width
-
 #*******************************************************************************
 
     def play(self):
 
-        if not self.previewed:
-
-            self.superLayout = QVBoxLayout()
-            self.superLayout.addWidget(self.videoWidget)
-            self.superLayout.addLayout(self.controlLayout)
-
-            self.setLayout(self.superLayout)
-
-            self.previewed = True
-
         if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
             self.mediaPlayer.pause()
-            self.videoWidget.setFixedSize(671,400)
+            self.videoWidget.setFixedSize(451,301)
         else:
             self.mediaPlayer.play()
-            self.videoWidget.setFixedSize(669,400)
+            self.videoWidget.setFixedSize(452,301)
 #*******************************************************************************
 
     def mediaStateChanged(self, state):

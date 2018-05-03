@@ -10,6 +10,7 @@ date last modified: 13/03/2018
 """
 
 import sys
+import os
 
 
 from HomeScreen import HomeScreen
@@ -17,6 +18,7 @@ from HomeScreen import HomeScreen
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 def main():
+
 
     # The application will be run as a QApplication
     app = QtWidgets.QApplication(sys.argv)

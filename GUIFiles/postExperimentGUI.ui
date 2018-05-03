@@ -1,17 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
+ <class>Analysis</class>
+ <widget class="QMainWindow" name="Analysis">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1280</width>
-    <height>751</height>
+    <width>1233</width>
+    <height>560</height>
    </rect>
   </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Analysis</string>
+  </property>
+  <property name="unifiedTitleAndToolBarOnMac">
+   <bool>false</bool>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QFrame" name="postExperimentFrame">
@@ -19,7 +28,7 @@
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>1431</width>
+      <width>1211</width>
       <height>511</height>
      </rect>
     </property>
@@ -87,38 +96,6 @@
       </layout>
      </widget>
     </widget>
-    <widget class="QFrame" name="videoPreviewFrame">
-     <property name="geometry">
-      <rect>
-       <x>740</x>
-       <y>10</y>
-       <width>681</width>
-       <height>491</height>
-      </rect>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Sunken</enum>
-     </property>
-     <widget class="VideoPlayer" name="videoWidget" native="true">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>671</width>
-        <height>471</height>
-       </rect>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>680</width>
-        <height>471</height>
-       </size>
-      </property>
-     </widget>
-    </widget>
     <widget class="QFrame" name="optionsFrame">
      <property name="geometry">
       <rect>
@@ -139,8 +116,8 @@
        <rect>
         <x>10</x>
         <y>10</y>
-        <width>443</width>
-        <height>485</height>
+        <width>441</width>
+        <height>471</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -202,6 +179,48 @@
                  <widget class="QCheckBox" name="useBlankCheckBox">
                   <property name="text">
                    <string>Last ROI = blank</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_6">
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>6</number>
+                </property>
+                <item>
+                 <widget class="QLabel" name="gaussianLabel">
+                  <property name="text">
+                   <string>Gaussian Intensity</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                  </property>
+                  <property name="margin">
+                   <number>0</number>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QSpinBox" name="gaussianSpinBox">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="minimum">
+                   <number>1</number>
+                  </property>
+                  <property name="singleStep">
+                   <number>2</number>
+                  </property>
+                  <property name="value">
+                   <number>21</number>
                   </property>
                  </widget>
                 </item>
@@ -346,7 +365,7 @@
                    </font>
                   </property>
                   <property name="text">
-                   <string>Output</string>
+                   <string>Output frame</string>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignCenter</set>
@@ -476,22 +495,6 @@
         </layout>
        </item>
        <item>
-        <spacer name="verticalSpacer">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeType">
-          <enum>QSizePolicy::Fixed</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
         <layout class="QVBoxLayout" name="verticalLayout_15">
          <item>
           <widget class="QPushButton" name="runAnalysisButton">
@@ -509,13 +512,6 @@
              </property>
              <property name="flat">
               <bool>false</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="saveOutputButton">
-             <property name="text">
-              <string>Save Output</string>
              </property>
             </widget>
            </item>
@@ -544,34 +540,98 @@
       </layout>
      </widget>
     </widget>
-   </widget>
-   <widget class="QFrame" name="frame_2">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>530</y>
-      <width>1431</width>
-      <height>421</height>
-     </rect>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::Box</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Raised</enum>
-    </property>
-    <property name="lineWidth">
-     <number>2</number>
-    </property>
-    <widget class="QWidget" name="frequencyPlot" native="true">
+    <widget class="QFrame" name="videoPreviewFrame">
      <property name="geometry">
       <rect>
-       <x>10</x>
+       <x>740</x>
        <y>10</y>
-       <width>591</width>
-       <height>401</height>
+       <width>461</width>
+       <height>381</height>
       </rect>
      </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Sunken</enum>
+     </property>
+     <widget class="VideoPlayer" name="videoWidget" native="true">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>451</width>
+        <height>371</height>
+       </rect>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>451</width>
+        <height>371</height>
+       </size>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="verticalLayoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>740</x>
+       <y>410</y>
+       <width>461</width>
+       <height>91</height>
+      </rect>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_8">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_10">
+        <item alignment="Qt::AlignHCenter">
+         <widget class="QCheckBox" name="rawDataCheckBox">
+          <property name="text">
+           <string>Raw data</string>
+          </property>
+         </widget>
+        </item>
+        <item alignment="Qt::AlignHCenter">
+         <widget class="QCheckBox" name="spectrogramCheckBox">
+          <property name="text">
+           <string>Spectogram</string>
+          </property>
+         </widget>
+        </item>
+        <item alignment="Qt::AlignHCenter">
+         <widget class="QCheckBox" name="powerSpectrumCheckBox">
+          <property name="text">
+           <string>Power spectrum</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_9">
+        <item>
+         <widget class="QPushButton" name="saveOutputButton">
+          <property name="text">
+           <string>Save Output</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="visualizeDataButton">
+          <property name="text">
+           <string>Visualize Data</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
     </widget>
    </widget>
   </widget>

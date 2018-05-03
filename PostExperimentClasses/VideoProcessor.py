@@ -27,8 +27,6 @@ class VideoProcessor:
 
         self.processedFrames = None
 
-        self.fps = 120
-
         self.referenceFrame = None
         self.lastDifferenceFrame = None
         self.numberOfFrames = 0
@@ -85,46 +83,42 @@ class VideoProcessor:
         # A frame will converted to a grayscale image
         grayImage = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-        # The blurred image will only be different from 'grayImage' if the user
-        # has chosen the 'Gaussian blur' option
-        if gaussianBlur:
-            # A Gaussian blur will be applied to that frame to cancel out noise
-            blurredImage = cv2.GaussianBlur(grayImage, (21, 21), 0)
-        else:
-            blurredImage = grayImage
-
         # Makes sure the first screen is black
         if self.referenceFrame is None:
-            self.referenceFrame = blurredImage
+            self.referenceFrame = grayImage
 
         # Max a black and white view of the absolute difference between the
         # image and the reference frame
-        frameDelta = cv2.absdiff(self.referenceFrame, blurredImage)
+        difference = cv2.absdiff(self.referenceFrame, grayImage)
 
         # If a user has chosen the option of 'averaging between difference frames'
         if averageDifferenceFrames:
 
             if self.lastDifferenceFrame is None:
-                self.lastDifferenceFrame = frameDelta
+                self.lastDifferenceFrame = difference
 
-            # The average is half the value of every RGB pixel of a difference frame +
+            # The average is half the value of every pixel of a difference frame +
             # the other half from the next difference frame (sliding window)
-            average = 0.5 * self.lastDifferenceFrame + 0.5 * frameDelta
-
-            # Threshold the data using the data the user has entered
-            threshold = cv2.threshold(average, pixelThreshold, 255, cv2.THRESH_BINARY)[1]
-
-            self.lastDifferenceFrame = frameDelta
+            image = 0.5 * self.lastDifferenceFrame + 0.5 * difference
 
         else:
 
-            # Threshold the data using the data the user has entered
-            threshold = cv2.threshold(frameDelta, pixelThreshold, 255, cv2.THRESH_BINARY)[1]
+            image = difference
+
+        if gaussianBlur[0]:
+
+            # A Gaussian blur will be applied to that frame to cancel out noise
+            image = cv2.GaussianBlur(image, (gaussianBlur[1], gaussianBlur[1]), 0)
+
+        # Threshold the data using the data the user has entered
+        image = cv2.threshold(image, pixelThreshold, 255, cv2.THRESH_TOZERO)[1]
 
         # Dilate the thresholded image to fill in holes
-        threshold = cv2.dilate(threshold, None, iterations = dilation)
+        image = cv2.dilate(image, None, iterations = dilation)
+        image *= 2
 
-        self.referenceFrame = blurredImage
+        self.lastDifferenceFrame = difference
+        self.referenceFrame = grayImage
 
         i = 0
 
@@ -132,7 +126,7 @@ class VideoProcessor:
         for ROI in self.AllROI:
 
             r = ROI
-            processedFrame = threshold[int(r[1]):int(r[1]+r[3]), int(r[0]):int(r[0]+r[2])]
+            processedFrame = image[int(r[1]):int(r[1]+r[3]), int(r[0]):int(r[0]+r[2])]
 
             # The preview is showed if desired
             if self.preview:
@@ -148,7 +142,7 @@ class VideoProcessor:
                 self.processedFrames[i][0].append(timestamp)
 
                 # y is the amount of white pixels in the processed frame
-                self.processedFrames[i][1].append(np.sum(processedFrame == 255))
+                self.processedFrames[i][1].append(np.sum(processedFrame > 0))
 
             i += 1
 

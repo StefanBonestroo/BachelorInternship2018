@@ -25,7 +25,7 @@ from PostExperimentClasses.VideoPlayer import VideoPlayer
 from PostExperimentClasses.VideoCutter import VideoCutter
 from PostExperimentClasses.RawDataPlotter import plotRawData
 
-class GUI(QtWidgets.QMainWindow, GUIFiles.postExperimentGUI.Ui_MainWindow):
+class GUI(QtWidgets.QMainWindow, GUIFiles.postExperimentGUI.Ui_Analysis):
 
     def __init__(self, parent = None):
 
@@ -127,14 +127,10 @@ class GUI(QtWidgets.QMainWindow, GUIFiles.postExperimentGUI.Ui_MainWindow):
         This function runs a 5 second preview of the processed frames.
         """
 
-        error = self.runAnalysis(True)
+        self.runAnalysis(True)
 
         self.progressBar.setValue(0)
-
-        if not error:
-
-            self.progressLabel.setText("")
-            QtWidgets.QApplication.processEvents()
+        QtWidgets.QApplication.processEvents()
 
 #******************************************************************************
 
@@ -148,7 +144,10 @@ class GUI(QtWidgets.QMainWindow, GUIFiles.postExperimentGUI.Ui_MainWindow):
         self.runAnalysisButton.setEnabled(False)
 
         # User options are stored in these variables
-        gaussianBlur = self.gaussianCheckBox.isChecked()
+        gaussianBlur = []
+        gaussianBlur.append(self.gaussianCheckBox.isChecked())
+        gaussianBlur.append(self.gaussianSpinBox.value())
+
         averageDifferenceFrames = self.middleFrameCheckBox.isChecked()
         useBlank = self.useBlankCheckBox.isChecked()
         pixelThreshold = self.thresholdSpinBox.value()
@@ -159,12 +158,14 @@ class GUI(QtWidgets.QMainWindow, GUIFiles.postExperimentGUI.Ui_MainWindow):
         self.progressBar.setValue(0)
         QtWidgets.QApplication.processEvents()
 
+
         # The user must enter at least one ROI
         if self.roiListWidget.item(0) == None:
 
             self.progressLabel.setText("Provide at least one Region Of Interest (ROI).")
+            self.runAnalysisButton.setEnabled(True)
             QtWidgets.QApplication.processEvents()
-            return True
+            return
 
         # A videoProcessor object is created and the frameGrabber function inside
         self.processor = VideoProcessor(self.videoPath, preview, startFrame)
@@ -186,7 +187,6 @@ class GUI(QtWidgets.QMainWindow, GUIFiles.postExperimentGUI.Ui_MainWindow):
             self.processor.AllROI.append(ROI)
 
             self.processor.increment = 100/(5 * self.processor.fps)
-
 
         # Else fully process all the frames for all ROIs
         else:
@@ -221,7 +221,8 @@ class GUI(QtWidgets.QMainWindow, GUIFiles.postExperimentGUI.Ui_MainWindow):
 
             # Give the frame + a bunch of options to the processor
             self.processor.frameProcessor(grabbedFrame, gaussianBlur, useBlank,\
-                                            pixelThreshold, dilation, averageDifferenceFrames)
+                                            pixelThreshold, dilation,\
+                                            averageDifferenceFrames)
 
             # The user can stop the analysis, thats when this runs
             if self.processor.terminated:
@@ -264,13 +265,16 @@ class GUI(QtWidgets.QMainWindow, GUIFiles.postExperimentGUI.Ui_MainWindow):
             if not preview:
                 plotRawData(data)
 
+        elif preview:
+
+            self.progressLabel.setText("")
+
         # Release stuff
-        cv2.destroyAllWindows()
         self.processor.capture.release()
+        cv2.destroyAllWindows()
 
         self.runAnalysisButton.setEnabled(True)
         QtWidgets.QApplication.processEvents()
-
 
 #******************************************************************************
 
