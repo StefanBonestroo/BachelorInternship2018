@@ -23,7 +23,10 @@ import GUIFiles.postExperimentGUI
 from PostExperimentClasses.VideoProcessor import VideoProcessor
 from PostExperimentClasses.VideoPlayer import VideoPlayer
 from PostExperimentClasses.VideoCutter import VideoCutter
-from PostExperimentClasses.RawDataPlotter import plotRawData
+from PostExperimentClasses.DataPlotter import plotRawData, makeSpectrogram, plotPowerSpectrum
+
+from PostExperimentClasses.OutputSaver import OutputSaver
+
 
 class GUI(QtWidgets.QMainWindow, GUIFiles.postExperimentGUI.Ui_Analysis):
 
@@ -66,7 +69,16 @@ class GUI(QtWidgets.QMainWindow, GUIFiles.postExperimentGUI.Ui_Analysis):
         self.selectRoiButton.clicked.connect(self.selectROI)
         self.clearRoiButton.clicked.connect(self.clearROI)
 
+#******************************************************************************
+
         self.previewOutputButton.clicked.connect(self.runPreview)
+
+#******************************************************************************
+
+        self.saveOutputButton.clicked.connect(self.openSaveScreen)
+        self.visualizeDataButton.clicked.connect(self.visualizeData)
+
+        self.outputSaver = OutputSaver()
 
 #******************************************************************************
 
@@ -262,8 +274,7 @@ class GUI(QtWidgets.QMainWindow, GUIFiles.postExperimentGUI.Ui_Analysis):
             self.progressLabel.setText(text)
             data = self.processor.processedFrames
 
-            if not preview:
-                plotRawData(data)
+            makeSpectrogram(data,self.processor.fps)
 
         elif preview:
 
@@ -320,3 +331,39 @@ class GUI(QtWidgets.QMainWindow, GUIFiles.postExperimentGUI.Ui_Analysis):
 
         # The media player will return an error string if something went wrong
         self.progressLabel.setText("Error: " + self.videoWidget.mediaPlayer.errorString())
+
+#******************************************************************************
+
+    def visualizeData(self):
+
+        data = self.processor.processedFrames
+        samplingRate = self.processor.fps
+
+        if self.rawDataCheckBox.isChecked():
+
+            plotRawData(data)
+
+        if self.spectrogramCheckBox.isChecked() or self.powerSpectrumCheckBox.isChecked():
+
+            makeSpectrogram(data, samplingRate)
+
+
+
+#******************************************************************************
+
+    def openSaveScreen(self):
+
+        try:
+            self.processor.processedFrames
+
+        except:
+
+            self.progressLabel.setText("Error: There is no data to save")
+            return
+
+        else:
+
+            data = self.processor.processedFrames
+            self.outputSaver.data = data
+
+            self.outputSaver.show()
