@@ -10,12 +10,12 @@ def plotRawData(data):
     plt.ylabel("total of all pixel values")
 
     plt.subplot(222)
-    plt.plot(data[2][0], data[2][1])
+    plt.plot(data[1][0], data[1][1])
     plt.xlabel("time (s)")
     plt.ylabel("total of all pixel values")
 
     plt.subplot(223)
-    plt.plot(data[1][0], data[1][1])
+    plt.plot(data[2][0], data[2][1])
     plt.xlabel("time (s)")
     plt.ylabel("total of all pixel values")
 
@@ -29,17 +29,17 @@ def makeSpectrogram(data, samplingRate):
     plt.figure(1)
 
     plt.subplot(221)
-    plt.specgram(data[0][1], NFFT = 50, Fs = samplingRate, noverlap=40)
+    plt.specgram(data[0][1], NFFT = 240, Fs = samplingRate, noverlap=230, cmap= 'jet')
     plt.xlabel("time (s)")
     plt.ylabel("frequency (Hz)")
 
     plt.subplot(222)
-    plt.specgram(data[2][1], NFFT = 50, Fs = samplingRate, noverlap=40)
+    plt.specgram(data[1][1], NFFT = 240, Fs = samplingRate, noverlap=230, cmap= 'jet')
     plt.xlabel("time (s)")
     plt.ylabel("frequency (Hz)")
 
     plt.subplot(223)
-    plt.specgram(data[1][1], NFFT = 50, Fs = samplingRate, noverlap=40)
+    plt.specgram(data[2][1], NFFT = 240, Fs = samplingRate, noverlap=230, cmap= 'jet')
     plt.xlabel("time (s)")
     plt.ylabel("frequency (Hz)")
 

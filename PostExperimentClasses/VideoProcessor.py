@@ -139,7 +139,7 @@ class VideoProcessor:
 
                 # x is the timestamp/frametime
                 timestamp = len(self.processedFrames[i][1]) * (1/self.fps)
-                self.processedFrames[i][0].append(timestamp)
+                self.processedFrames[i][0].append(round(timestamp,4))
 
                 # y is the amount of white pixels in the processed frame
                 self.processedFrames[i][1].append(np.sum(processedFrame > 0))

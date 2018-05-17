@@ -75,8 +75,9 @@ class GUI(QtWidgets.QMainWindow, GUIFiles.postExperimentGUI.Ui_Analysis):
 
 #******************************************************************************
 
-        self.saveOutputButton.clicked.connect(self.openSaveScreen)
         self.visualizeDataButton.clicked.connect(self.visualizeData)
+        self.saveRawDataButton.clicked.connect(self.saveRawData)
+        self.saveOutputButton.clicked.connect(self.openSaveScreen)
 
         self.outputSaver = OutputSaver()
 
@@ -121,8 +122,8 @@ class GUI(QtWidgets.QMainWindow, GUIFiles.postExperimentGUI.Ui_Analysis):
             # ROI = self.cutter.selectROI()
 
             self.roiListWidget.addItem("(314, 56, 390, 348)")
-            self.roiListWidget.addItem("(272, 452, 451, 413)")
             self.roiListWidget.addItem("(700, 53, 396, 340)")
+            self.roiListWidget.addItem("(272, 452, 451, 413)")
 
 
 #******************************************************************************
@@ -353,17 +354,35 @@ class GUI(QtWidgets.QMainWindow, GUIFiles.postExperimentGUI.Ui_Analysis):
 
     def openSaveScreen(self):
 
-        try:
-            self.processor.processedFrames
+        self.outputSaver.show()
 
-        except:
+#******************************************************************************
 
-            self.progressLabel.setText("Error: There is no data to save")
-            return
+    def saveRawData(self):
 
-        else:
+        name, useless = QtWidgets.QFileDialog.getSaveFileName(self, "Save File", "data")
 
-            data = self.processor.processedFrames
-            self.outputSaver.data = data
+        data = self.processor.processedFrames
 
-            self.outputSaver.show()
+        counter = 1
+
+        for chamber in data:
+
+            path = name + str(counter) + ".csv"
+
+            file = open(path, "w")
+
+            headers = "time (s); totalPixelValue\n"
+            file.write(headers)
+
+            for datapoint in range(0,len(chamber[0])):
+
+                x = chamber[0][datapoint]
+                y = chamber[1][datapoint]
+                print(str(x))
+
+                row = str(x) + ";" + str(y) + "\n"
+                file.write(row)
+
+            counter += 1
+            file.close()

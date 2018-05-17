@@ -15,6 +15,7 @@ class HomeScreen(QtWidgets.QMainWindow, GUIFiles.homeScreenGUI.Ui_MainWindow):
 
         self.experimentButton.clicked.connect(self.experimentChosen)
         self.analysisButton.clicked.connect(self.analysisChosen)
+        self.dataButton.clicked.connect(self.dataChosen)
 
         self.choice = None
 
@@ -31,4 +32,9 @@ class HomeScreen(QtWidgets.QMainWindow, GUIFiles.homeScreenGUI.Ui_MainWindow):
     def analysisChosen(self):
 
         self.choice = "Analysis"
+        QtWidgets.QApplication.quit()
+
+    def dataChosen(self):
+
+        self.choice = "Data"
         QtWidgets.QApplication.quit()

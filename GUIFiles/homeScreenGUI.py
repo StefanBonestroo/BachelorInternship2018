@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(321, 198)
+        MainWindow.resize(322, 198)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -43,6 +43,9 @@ class Ui_MainWindow(object):
         self.analysisButton = QtWidgets.QPushButton(self.verticalLayoutWidget)
         self.analysisButton.setObjectName("analysisButton")
         self.horizontalLayout.addWidget(self.analysisButton)
+        self.dataButton = QtWidgets.QPushButton(self.verticalLayoutWidget)
+        self.dataButton.setObjectName("dataButton")
+        self.horizontalLayout.addWidget(self.dataButton)
         self.verticalLayout.addLayout(self.horizontalLayout)
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
@@ -58,4 +61,5 @@ class Ui_MainWindow(object):
         self.ExperimentOrAnalysisLabel.setText(_translate("MainWindow", "Pick an option:"))
         self.experimentButton.setText(_translate("MainWindow", "Experiment"))
         self.analysisButton.setText(_translate("MainWindow", "Analysis"))
+        self.dataButton.setText(_translate("MainWindow", "Prepare Data"))
 

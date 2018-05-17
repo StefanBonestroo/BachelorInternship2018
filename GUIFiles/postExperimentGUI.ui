@@ -588,6 +588,13 @@
       </rect>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_8">
+      <item alignment="Qt::AlignHCenter">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Visualization</string>
+        </property>
+       </widget>
+      </item>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_10">
         <item alignment="Qt::AlignHCenter">
@@ -616,16 +623,23 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_9">
         <item>
-         <widget class="QPushButton" name="saveOutputButton">
+         <widget class="QPushButton" name="visualizeDataButton">
           <property name="text">
-           <string>Save Output</string>
+           <string>Visualize Data</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="visualizeDataButton">
+         <widget class="QPushButton" name="saveRawDataButton">
           <property name="text">
-           <string>Visualize Data</string>
+           <string>Save Raw Data</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="saveOutputButton">
+          <property name="text">
+           <string>Go to: Data Preparation</string>
           </property>
          </widget>
         </item>

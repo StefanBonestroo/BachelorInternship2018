@@ -39,7 +39,7 @@ def main():
             pre.show()
             app.exec_()
 
-        else:
+        elif homeScreen.choice == "Analysis":
 
             from PostExperimentClasses.GUI import GUI as postGUI
 
@@ -47,6 +47,13 @@ def main():
             post.show()
             app.exec_()
 
+        elif homeScreen.choice == "Data":
+
+            from PostExperimentClasses.OutputSaver import OutputSaver as dataGUI
+
+            data = dataGUI()
+            data.show()
+            app.exec_()
 
 if __name__ == '__main__':
     main()
