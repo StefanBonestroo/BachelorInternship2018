@@ -410,6 +410,55 @@
          <item>
           <layout class="QVBoxLayout" name="verticalLayout_2">
            <item>
+            <widget class="QFrame" name="verticalFrame_3">
+             <property name="frameShape">
+              <enum>QFrame::Panel</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_9">
+              <item>
+               <widget class="QLabel" name="trackerLabel">
+                <property name="font">
+                 <font>
+                  <weight>75</weight>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Use Tracker?</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_11">
+                <item alignment="Qt::AlignHCenter">
+                 <widget class="QRadioButton" name="yesTrackerRadioButton">
+                  <property name="text">
+                   <string>Yes</string>
+                  </property>
+                 </widget>
+                </item>
+                <item alignment="Qt::AlignHCenter">
+                 <widget class="QRadioButton" name="noTrackerRadioButton">
+                  <property name="text">
+                   <string>No</string>
+                  </property>
+                  <property name="checked">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
             <widget class="QLabel" name="roiLabel">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -429,7 +478,7 @@
               <number>0</number>
              </property>
              <property name="text">
-              <string>ROI = (up-left x, up-left y, width, height)</string>
+              <string>Chambers:</string>
              </property>
              <property name="scaledContents">
               <bool>false</bool>

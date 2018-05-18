@@ -17,6 +17,8 @@ import numpy as np
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+from PostExperimentClasses.VideoCutter import VideoCutter
+
 class VideoProcessor:
 
     def __init__(self, path, preview, startFrame):
@@ -32,6 +34,9 @@ class VideoProcessor:
         self.numberOfFrames = 0
         self.AllROI = []
         self.preview = preview
+
+        self.trackers = []
+        self.trackedBoxes = []
 
         # This opens a video capture
         self.capture = cv2.VideoCapture(self.path)
@@ -73,7 +78,7 @@ class VideoProcessor:
 
 #*******************************************************************************
 
-    def frameProcessor(self, frame, gaussianBlur, useBlank, pixelThreshold, dilation, averageDifferenceFrames):
+    def frameProcessor(self, frame, gaussianBlur, useBlank, pixelThreshold, dilation, averageDifferenceFrames, trackerBool):
 
         """
         This function processes the grabbed frames in 'self.grabbedFrames' using
@@ -85,7 +90,39 @@ class VideoProcessor:
 
         # Makes sure the first screen is black
         if self.referenceFrame is None:
+
+            # Initialize initial position of the objects to be tracked
+            if trackerBool:
+
+                recties = [(80,56,100,100), (750,53,100,100), (550,470,100,100)]
+
+                for object in range(0,len(self.AllROI)):
+                    # cutter = VideoCutter(frame)
+                    # cutter.windowName = "Select object in chamber " + str(object)
+                    # rect = cutter.selectROI()
+                    self.trackedBoxes.append(recties[object])
+
+                    tracker = cv2.TrackerMIL_create()
+                    tracker.init(frame, recties[object - 1])
+                    self.trackers.append(tracker)
+
             self.referenceFrame = grayImage
+
+        updates = []
+        counter = 0
+
+        for position in self.trackers:
+
+            success, updatedBox = position.update(frame)
+
+            if success:
+                updates.append(updatedBox)
+            else:
+                updates.append(self.trackedBoxes[counter])
+
+            counter += 1
+
+        self.trackedBoxes = updates
 
         # Max a black and white view of the absolute difference between the
         # image and the reference frame
@@ -125,11 +162,24 @@ class VideoProcessor:
         # Every ROI is cut out of the processed frame
         for ROI in self.AllROI:
 
-            r = ROI
-            processedFrame = image[int(r[1]):int(r[1]+r[3]), int(r[0]):int(r[0]+r[2])]
+            # r = ROI
+            # processedFrame = image[int(r[1]):int(r[1]+r[3]), int(r[0]):int(r[0]+r[2])]
 
             # The preview is showed if desired
+            edit = image
+            processedFrame = image
+
             if self.preview:
+
+                for box in self.trackedBoxes:
+
+                    xmid = box[0] + (box[2]/2)
+                    ymid = box[1] + (box[3]/2)
+
+                    edit = cv2.circle(edit,(int(xmid),int(ymid)), 6, (255), -1)
+                    print(str(xmid),str(ymid))
+
+                print("----------------------")
 
                 cv2.imshow('Preview', processedFrame)
                 cv2.waitKey(1)

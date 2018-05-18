@@ -161,6 +161,7 @@ class GUI(QtWidgets.QMainWindow, GUIFiles.postExperimentGUI.Ui_Analysis):
         gaussianBlur.append(self.gaussianCheckBox.isChecked())
         gaussianBlur.append(self.gaussianSpinBox.value())
 
+        tracker = self.yesTrackerRadioButton.isChecked()
         averageDifferenceFrames = self.middleFrameCheckBox.isChecked()
         useBlank = self.useBlankCheckBox.isChecked()
         pixelThreshold = self.thresholdSpinBox.value()
@@ -170,7 +171,6 @@ class GUI(QtWidgets.QMainWindow, GUIFiles.postExperimentGUI.Ui_Analysis):
         self.progressLabel.setText("Grabbing frames...")
         self.progressBar.setValue(0)
         QtWidgets.QApplication.processEvents()
-
 
         # The user must enter at least one ROI
         if self.roiListWidget.item(0) == None:
@@ -183,7 +183,6 @@ class GUI(QtWidgets.QMainWindow, GUIFiles.postExperimentGUI.Ui_Analysis):
         # A videoProcessor object is created and the frameGrabber function inside
         self.processor = VideoProcessor(self.videoPath, preview, startFrame)
         grabber = self.processor.frameGrabber()
-
 
         # If the user selected the preview option preview only the selected ROI
         if preview:
@@ -235,7 +234,7 @@ class GUI(QtWidgets.QMainWindow, GUIFiles.postExperimentGUI.Ui_Analysis):
             # Give the frame + a bunch of options to the processor
             self.processor.frameProcessor(grabbedFrame, gaussianBlur, useBlank,\
                                             pixelThreshold, dilation,\
-                                            averageDifferenceFrames)
+                                            averageDifferenceFrames, tracker)
 
             # The user can stop the analysis, thats when this runs
             if self.processor.terminated:
