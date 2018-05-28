@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1111</width>
+    <width>1110</width>
     <height>575</height>
    </rect>
   </property>
@@ -41,7 +41,7 @@
     <widget class="QFrame" name="frame">
      <property name="geometry">
       <rect>
-       <x>290</x>
+       <x>220</x>
        <y>10</y>
        <width>481</width>
        <height>511</height>
@@ -100,7 +100,11 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="familyNameEdit"/>
+          <widget class="QLineEdit" name="familyNameEdit">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
@@ -114,7 +118,11 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="lineNameEdit"/>
+          <widget class="QLineEdit" name="lineNameEdit">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="QLabel" name="label_34">
@@ -124,12 +132,15 @@
           </widget>
          </item>
          <item>
-          <widget class="QSpinBox" name="dayHatchedSpinBox">
+          <widget class="QSpinBox" name="ageSpinBox">
            <property name="minimum">
-            <number>1</number>
+            <number>0</number>
            </property>
            <property name="maximum">
             <number>31</number>
+           </property>
+           <property name="value">
+            <number>2</number>
            </property>
           </widget>
          </item>
@@ -173,7 +184,35 @@
               </widget>
              </item>
              <item>
-              <widget class="QSpinBox" name="preExperimentSpinBox"/>
+              <widget class="QSpinBox" name="preExperimentSpinBox">
+               <property name="maximum">
+                <number>200</number>
+               </property>
+               <property name="value">
+                <number>120</number>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_19">
+             <item>
+              <widget class="QLabel" name="label_21">
+               <property name="text">
+                <string>Time frame (s):</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSpinBox" name="timeFrameSpinBox">
+               <property name="maximum">
+                <number>60</number>
+               </property>
+               <property name="value">
+                <number>30</number>
+               </property>
+              </widget>
              </item>
             </layout>
            </item>
@@ -191,7 +230,14 @@
               </widget>
              </item>
              <item>
-              <widget class="QSpinBox" name="stimulusLengthSpinBox"/>
+              <widget class="QSpinBox" name="stimulusLengthSpinBox">
+               <property name="maximum">
+                <number>100</number>
+               </property>
+               <property name="value">
+                <number>1</number>
+               </property>
+              </widget>
              </item>
             </layout>
            </item>
@@ -205,7 +251,14 @@
               </widget>
              </item>
              <item>
-              <widget class="QSpinBox" name="intervalLengthSpinBox"/>
+              <widget class="QSpinBox" name="intervalLengthSpinBox">
+               <property name="maximum">
+                <number>200</number>
+               </property>
+               <property name="value">
+                <number>120</number>
+               </property>
+              </widget>
              </item>
             </layout>
            </item>
@@ -245,7 +298,11 @@
             </widget>
            </item>
            <item>
-            <widget class="QLineEdit" name="conOneEdit"/>
+            <widget class="QLineEdit" name="conOneEdit">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
@@ -272,7 +329,11 @@
             </widget>
            </item>
            <item>
-            <widget class="QLineEdit" name="conTwoEdit"/>
+            <widget class="QLineEdit" name="conTwoEdit">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
@@ -299,7 +360,11 @@
             </widget>
            </item>
            <item>
-            <widget class="QLineEdit" name="conThreeEdit"/>
+            <widget class="QLineEdit" name="conThreeEdit">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
@@ -326,7 +391,11 @@
             </widget>
            </item>
            <item>
-            <widget class="QLineEdit" name="conFourEdit"/>
+            <widget class="QLineEdit" name="conFourEdit">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
@@ -398,7 +467,7 @@
                 <bool>false</bool>
                </property>
                <property name="minimum">
-                <number>1</number>
+                <number>0</number>
                </property>
                <property name="maximum">
                 <number>31</number>
@@ -480,7 +549,7 @@
                 <bool>false</bool>
                </property>
                <property name="minimum">
-                <number>1</number>
+                <number>0</number>
                </property>
                <property name="maximum">
                 <number>31</number>
@@ -525,6 +594,9 @@
              <property name="enabled">
               <bool>false</bool>
              </property>
+             <property name="text">
+              <string>HV Family</string>
+             </property>
             </widget>
            </item>
            <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
@@ -541,6 +613,9 @@
             <widget class="QLineEdit" name="conThreeLineEdit">
              <property name="enabled">
               <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>HV Line</string>
              </property>
             </widget>
            </item>
@@ -562,7 +637,7 @@
                 <bool>false</bool>
                </property>
                <property name="minimum">
-                <number>1</number>
+                <number>0</number>
                </property>
                <property name="maximum">
                 <number>31</number>
@@ -607,6 +682,9 @@
              <property name="enabled">
               <bool>false</bool>
              </property>
+             <property name="text">
+              <string>HS Family</string>
+             </property>
             </widget>
            </item>
            <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
@@ -623,6 +701,9 @@
             <widget class="QLineEdit" name="conFourLineEdit">
              <property name="enabled">
               <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>HS Line</string>
              </property>
             </widget>
            </item>
@@ -644,10 +725,13 @@
                 <bool>false</bool>
                </property>
                <property name="minimum">
-                <number>1</number>
+                <number>0</number>
                </property>
                <property name="maximum">
                 <number>31</number>
+               </property>
+               <property name="value">
+                <number>2</number>
                </property>
               </widget>
              </item>
@@ -663,9 +747,9 @@
     <widget class="QWidget" name="verticalLayoutWidget_13">
      <property name="geometry">
       <rect>
-       <x>780</x>
+       <x>710</x>
        <y>10</y>
-       <width>301</width>
+       <width>371</width>
        <height>481</height>
       </rect>
      </property>
@@ -689,7 +773,11 @@
            </widget>
           </item>
           <item>
-           <widget class="QSpinBox" name="habutionSetUpSpinBox"/>
+           <widget class="QSpinBox" name="habituationSetUpSpinBox">
+            <property name="value">
+             <number>10</number>
+            </property>
+           </widget>
           </item>
           <item>
            <widget class="QLabel" name="label_29">
@@ -699,7 +787,11 @@
            </widget>
           </item>
           <item>
-           <widget class="QSpinBox" name="habituationLightsSpinBox"/>
+           <widget class="QSpinBox" name="habituationLightsSpinBox">
+            <property name="value">
+             <number>10</number>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>
@@ -723,161 +815,179 @@
        </widget>
       </item>
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout_11">
+       <layout class="QHBoxLayout" name="horizontalLayout_18">
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_9">
-          <item alignment="Qt::AlignLeft|Qt::AlignVCenter">
-           <widget class="QLabel" name="label_17">
-            <property name="text">
-             <string>Humidity:</string>
-            </property>
-           </widget>
+         <layout class="QVBoxLayout" name="verticalLayout_11">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_8">
+            <item alignment="Qt::AlignLeft|Qt::AlignVCenter">
+             <widget class="QLabel" name="label_15">
+              <property name="text">
+               <string>Temperature:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="temperatureSpinBox">
+              <property name="value">
+               <number>24</number>
+              </property>
+             </widget>
+            </item>
+            <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+             <widget class="QLabel" name="label_16">
+              <property name="text">
+               <string>° C</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
           <item>
-           <widget class="QSpinBox" name="humiditySpinBox"/>
+           <layout class="QHBoxLayout" name="horizontalLayout_9">
+            <item alignment="Qt::AlignLeft|Qt::AlignVCenter">
+             <widget class="QLabel" name="label_17">
+              <property name="text">
+               <string>Humidity:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="humiditySpinBox">
+              <property name="value">
+               <number>33</number>
+              </property>
+             </widget>
+            </item>
+            <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+             <widget class="QLabel" name="label_18">
+              <property name="text">
+               <string>%</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_10">
+            <item alignment="Qt::AlignLeft|Qt::AlignVCenter">
+             <widget class="QLabel" name="label_19">
+              <property name="text">
+               <string>Flow:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="flowSpinBox">
+              <property name="value">
+               <number>17</number>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_20">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_14">
           <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
-           <widget class="QLabel" name="label_18">
+           <widget class="QLabel" name="label_36">
             <property name="text">
-             <string>%</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_8">
-          <item alignment="Qt::AlignLeft|Qt::AlignVCenter">
-           <widget class="QLabel" name="label_15">
-            <property name="text">
-             <string>Temperature:</string>
+             <string>Additional data:</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QSpinBox" name="temperatureSpinBox"/>
-          </item>
-          <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
-           <widget class="QLabel" name="label_16">
-            <property name="text">
-             <string>° C</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_10">
-          <item alignment="Qt::AlignLeft|Qt::AlignVCenter">
-           <widget class="QLabel" name="label_19">
-            <property name="text">
-             <string>Flow:</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QSpinBox" name="flowSpinBox"/>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_20">
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <widget class="Line" name="line_4">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <layout class="QVBoxLayout" name="verticalLayout_14">
-        <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
-         <widget class="QLabel" name="label_36">
-          <property name="text">
-           <string>Additional data:</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_13">
-          <item>
-           <widget class="QLabel" name="label_37">
-            <property name="text">
-             <string>Date:</string>
-            </property>
-           </widget>
+           <layout class="QHBoxLayout" name="horizontalLayout_13">
+            <item>
+             <widget class="QLabel" name="label_37">
+              <property name="text">
+               <string>Date:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="experimentDaySpinBox">
+              <property name="minimum">
+               <number>1</number>
+              </property>
+              <property name="maximum">
+               <number>31</number>
+              </property>
+              <property name="value">
+               <number>4</number>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_7">
+              <property name="text">
+               <string>-</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="experimentMonthSpinBox">
+              <property name="minimum">
+               <number>1</number>
+              </property>
+              <property name="maximum">
+               <number>12</number>
+              </property>
+              <property name="value">
+               <number>4</number>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
           <item>
-           <widget class="QSpinBox" name="experimentDaySpinBox">
-            <property name="minimum">
-             <number>1</number>
-            </property>
-            <property name="maximum">
-             <number>31</number>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_7">
-            <property name="text">
-             <string>-</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QSpinBox" name="experimentMonthSpinBox">
-            <property name="minimum">
-             <number>1</number>
-            </property>
-            <property name="maximum">
-             <number>12</number>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_14">
-          <item>
-           <widget class="QLabel" name="label_38">
-            <property name="text">
-             <string>Time:</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QSpinBox" name="experimentHourSpinBox">
-            <property name="maximum">
-             <number>23</number>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_8">
-            <property name="text">
-             <string>:</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QSpinBox" name="experimentMinutesSpinBox">
-            <property name="maximum">
-             <number>59</number>
-            </property>
-           </widget>
+           <layout class="QHBoxLayout" name="horizontalLayout_14">
+            <item>
+             <widget class="QLabel" name="label_38">
+              <property name="text">
+               <string>Time:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="experimentHourSpinBox">
+              <property name="maximum">
+               <number>23</number>
+              </property>
+              <property name="value">
+               <number>16</number>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_8">
+              <property name="text">
+               <string>:</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="experimentMinutesSpinBox">
+              <property name="maximum">
+               <number>59</number>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
          </layout>
         </item>
@@ -900,7 +1010,11 @@
          </widget>
         </item>
         <item>
-         <widget class="QPlainTextEdit" name="notesTextEdit"/>
+         <widget class="QPlainTextEdit" name="notesTextEdit">
+          <property name="plainText">
+           <string/>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -909,9 +1023,9 @@
     <widget class="QPushButton" name="saveOutputButton">
      <property name="geometry">
       <rect>
-       <x>780</x>
+       <x>710</x>
        <y>490</y>
-       <width>301</width>
+       <width>371</width>
        <height>31</height>
       </rect>
      </property>
@@ -924,7 +1038,7 @@
       <rect>
        <x>10</x>
        <y>10</y>
-       <width>271</width>
+       <width>201</width>
        <height>511</height>
       </rect>
      </property>
@@ -932,7 +1046,7 @@
       <item>
        <widget class="QLabel" name="label_6">
         <property name="text">
-         <string>Raw data files</string>
+         <string>Raw data input</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
@@ -940,12 +1054,39 @@
        </widget>
       </item>
       <item>
-       <widget class="QListWidget" name="listWidget"/>
+       <widget class="QListWidget" name="rawDataList"/>
       </item>
       <item>
        <widget class="QPushButton" name="setRawDataDirectoryButton">
         <property name="text">
-         <string>Set Directory...</string>
+         <string>Set Input Directory...</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="Line" name="line_9">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_13">
+        <property name="text">
+         <string>Output data file</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QListWidget" name="outputDataList"/>
+      </item>
+      <item>
+       <widget class="QPushButton" name="setOutputDataDirectoryButton">
+        <property name="text">
+         <string>Set Output Directory...</string>
         </property>
        </widget>
       </item>

@@ -371,7 +371,7 @@ class Ui_Analysis(object):
         self.trackerLabel.setText(_translate("Analysis", "Use Tracker?"))
         self.yesTrackerRadioButton.setText(_translate("Analysis", "Yes"))
         self.noTrackerRadioButton.setText(_translate("Analysis", "No"))
-        self.roiLabel.setText(_translate("Analysis", "ROI = (up-left x, up-left y, width, height)"))
+        self.roiLabel.setText(_translate("Analysis", "Chambers:"))
         self.selectRoiButton.setText(_translate("Analysis", "Select ROI"))
         self.clearRoiButton.setText(_translate("Analysis", "Clear"))
         self.runAnalysisButton.setText(_translate("Analysis", "Run Analysis"))

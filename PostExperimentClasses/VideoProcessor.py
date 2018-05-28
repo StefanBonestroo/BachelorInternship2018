@@ -32,7 +32,7 @@ class VideoProcessor:
         self.referenceFrame = None
         self.lastDifferenceFrame = None
         self.numberOfFrames = 0
-        self.AllROI = []
+        self.allROI = []
         self.preview = preview
 
         self.trackers = []
@@ -94,16 +94,16 @@ class VideoProcessor:
             # Initialize initial position of the objects to be tracked
             if trackerBool:
 
-                recties = [(80,56,100,100), (750,53,100,100), (550,470,100,100)]
+                for object in range(0,len(self.allROI)):
 
-                for object in range(0,len(self.AllROI)):
-                    # cutter = VideoCutter(frame)
-                    # cutter.windowName = "Select object in chamber " + str(object)
-                    # rect = cutter.selectROI()
-                    self.trackedBoxes.append(recties[object])
+                    cutter = VideoCutter(frame)
+                    cutter.windowName = "Select object in chamber " + str(object + 1)
+                    rect = cutter.selectROI()
+
+                    self.trackedBoxes.append(rect)
 
                     tracker = cv2.TrackerMIL_create()
-                    tracker.init(frame, recties[object - 1])
+                    tracker.init(frame, rect)
                     self.trackers.append(tracker)
 
             self.referenceFrame = grayImage
@@ -160,26 +160,18 @@ class VideoProcessor:
         i = 0
 
         # Every ROI is cut out of the processed frame
-        for ROI in self.AllROI:
+        for ROI in self.allROI:
 
-            # r = ROI
-            # processedFrame = image[int(r[1]):int(r[1]+r[3]), int(r[0]):int(r[0]+r[2])]
+            r = ROI
+            processedFrame = image[int(r[1]):int(r[1]+r[3]), int(r[0]):int(r[0]+r[2])]
 
             # The preview is showed if desired
-            edit = image
-            processedFrame = image
-
             if self.preview:
 
                 for box in self.trackedBoxes:
 
                     xmid = box[0] + (box[2]/2)
                     ymid = box[1] + (box[3]/2)
-
-                    edit = cv2.circle(edit,(int(xmid),int(ymid)), 6, (255), -1)
-                    print(str(xmid),str(ymid))
-
-                print("----------------------")
 
                 cv2.imshow('Preview', processedFrame)
                 cv2.waitKey(1)

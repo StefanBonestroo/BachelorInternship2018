@@ -196,7 +196,7 @@ class GUI(QtWidgets.QMainWindow, GUIFiles.postExperimentGUI.Ui_Analysis):
 
             ROI = item.text()
             ROI = list(eval(ROI))
-            self.processor.AllROI.append(ROI)
+            self.processor.allROI.append(ROI)
 
             self.processor.increment = 100/(5 * self.processor.fps)
 
@@ -207,7 +207,7 @@ class GUI(QtWidgets.QMainWindow, GUIFiles.postExperimentGUI.Ui_Analysis):
 
                 ROI = self.roiListWidget.item(i).text()
                 ROI = list(eval(ROI))
-                self.processor.AllROI.append(ROI)
+                self.processor.allROI.append(ROI)
 
         # This creates the data structure where all data will be stored:
         # A list containing lists for every ROI, which then contain an x and a y value
@@ -274,8 +274,6 @@ class GUI(QtWidgets.QMainWindow, GUIFiles.postExperimentGUI.Ui_Analysis):
             self.progressLabel.setText(text)
             data = self.processor.processedFrames
 
-            makeSpectrogram(data,self.processor.fps)
-
         elif preview:
 
             self.progressLabel.setText("")
@@ -338,16 +336,19 @@ class GUI(QtWidgets.QMainWindow, GUIFiles.postExperimentGUI.Ui_Analysis):
 
         data = self.processor.processedFrames
         samplingRate = self.processor.fps
+        ROICount = len(self.processor.allROI)
 
         if self.rawDataCheckBox.isChecked():
 
-            plotRawData(data)
+            plotRawData(data, ROICount)
 
-        if self.spectrogramCheckBox.isChecked() or self.powerSpectrumCheckBox.isChecked():
+        if self.spectrogramCheckBox.isChecked():
 
-            makeSpectrogram(data, samplingRate)
+            makeSpectrogram(data, samplingRate, ROICount)
 
+        if self.powerSpectrumCheckBox.isChecked():
 
+            plotPowerSpectrum(data, samplingRate, ROICount)
 
 #******************************************************************************
 
@@ -378,7 +379,6 @@ class GUI(QtWidgets.QMainWindow, GUIFiles.postExperimentGUI.Ui_Analysis):
 
                 x = chamber[0][datapoint]
                 y = chamber[1][datapoint]
-                print(str(x))
 
                 row = str(x) + ";" + str(y) + "\n"
                 file.write(row)
